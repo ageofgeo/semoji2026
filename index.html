@@ -531,7 +531,14 @@ function subscribe(user) {
   }, err => console.error(err));
 }
 
-Q('btnStart').onclick = () => showOverlay('none');
+Q('btnStart').onclick = () => {
+  showOverlay('none');
+  // 데이터가 아직 없으면 강제로 렌더링
+  if (projs.length === 0) {
+    const g = Q('grid');
+    g.innerHTML = '<div style="text-align:center;padding:60px;color:#94a3b8;font-size:14px">데이터를 불러오는 중입니다...<br>잠시 후 자동으로 나타납니다.</div>';
+  }
+};
 Q('tabInv').onclick = () => { if (adm) setAdm(false); };
 Q('tabAdm').onclick = () => { if (adm) setAdm(false); else Q('admOv').classList.add('open'); };
 Q('btnAdmNo').onclick = () => Q('admOv').classList.remove('open');
@@ -541,4 +548,22 @@ Q('btnAdmYes').onclick = chkAdm;
 function chkAdm() { if (Q('pwEl').value === KEY) { Q('admOv').classList.remove('open'); Q('pwEl').value = ''; setAdm(true); toast('관리자 모드로 전환되었습니다.', 'ok'); } else toast('비밀번호가 올바르지 않습니다.', 'err'); }
 Q('btnX').onclick = closeDet;
 Q('detOv').onclick = e => { if (e.target === Q('detOv')) closeDet(); };
-Q('btnEd').onclick = () => { if (isEd) saveProfile(); else setEdM
+Q('btnEd').onclick = () => { if (isEd) saveProfile(); else setEdMode(true); };
+Q('btnEdX').onclick = () => setEdMode(false);
+Q('eds').oninput = updCC;
+Q('inn').oninput = updateOk;
+Q('bok').onclick = () => { if (Q('bok').classList.contains('act')) doInvest(); };
+Q('bccl').onclick = () => { if (selP) { doCancelInv(selP.id); closeDet(); } };
+Q('btnReset').onclick = doReset;
+
+onAuthStateChanged(auth, user => {
+  if (user && !subDone) { subDone = true; me = user; subscribe(user); }
+});
+signInAnonymously(auth).catch(err => {
+  console.error(err); showOverlay('intro');
+  toast('Firebase 익명 로그인을 활성화해주세요.', 'err');
+});
+setTimeout(() => { if (!Q('overlay').classList.contains('hide')) showOverlay('intro'); }, 3000);
+</script>
+</body>
+</html>
