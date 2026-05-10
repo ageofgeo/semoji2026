@@ -541,7 +541,13 @@ async function loadAll() {
     sb.from('projects').select('*').order('id'),
     sb.from('investments').select('*')
   ]);
-  projs = p || [];
+  // 중복 제거: slot_id 기준으로 첫번째만 유지
+  const seen = new Set();
+  projs = (p || []).filter(x => {
+    if (seen.has(x.slot_id)) return false;
+    seen.add(x.slot_id);
+    return true;
+  });
   myInvs = i || [];
   renderCards();
   refreshBudget();
