@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>2026 세.모.지 여행지리</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Noto Sans KR',sans-serif;background:#f8fafc;color:#1e293b}
@@ -19,10 +18,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 #overlay.hide{opacity:0;pointer-events:none}
 #overlay .sp{animation:spin 1s linear infinite}
 #overlay p{color:#818cf8;font-weight:900;font-size:11px;letter-spacing:.2em;animation:pulse 2s ease-in-out infinite}
-
-#intro{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:24px;
-  background:radial-gradient(circle at 20% 20%,rgba(79,70,229,.3),transparent 55%),radial-gradient(circle at 80% 80%,rgba(59,130,246,.2),transparent 55%),#0f172a;
-  transition:opacity .4s}
+#intro{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:24px;background:radial-gradient(circle at 20% 20%,rgba(79,70,229,.3),transparent 55%),radial-gradient(circle at 80% 80%,rgba(59,130,246,.2),transparent 55%),#0f172a;transition:opacity .4s}
 #intro.hide{opacity:0;pointer-events:none}
 .icard{max-width:800px;width:100%;text-align:center;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:44px;padding:48px 40px;backdrop-filter:blur(20px);animation:pop .5s ease}
 .icard h2{font-size:clamp(20px,4vw,38px);font-weight:900;color:#fff;line-height:1.3;margin:20px 0 16px}
@@ -32,16 +28,13 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 .qb{color:#818cf8;font-weight:700;font-style:normal;text-decoration:underline;text-underline-offset:4px}
 .btn-go{display:inline-flex;align-items:center;gap:10px;background:#fff;color:#0f172a;border:none;cursor:pointer;padding:15px 38px;border-radius:22px;font-size:16px;font-weight:900;box-shadow:0 10px 28px rgba(0,0,0,.4);transition:transform .2s;font-family:inherit}
 .btn-go:hover{transform:scale(1.04)}
-.btn-go:active{transform:scale(.97)}
-
 #app{min-height:100vh}
 header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.88);backdrop-filter:blur(18px);border-bottom:1px solid #e2e8f0;padding:12px 28px;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px}
 .logo{display:flex;align-items:center;gap:12px}
 .logo-ic{background:#4f46e5;border-radius:14px;padding:8px;display:flex}
-.logo h1{font-size:clamp(15px,2.2vw,20px);font-weight:900;color:#0f172a;letter-spacing:-.02em}
 .hdr-r{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
 .tabs{display:flex;background:#f1f5f9;padding:3px;border-radius:14px;border:1px solid #e2e8f0}
-.tab{padding:6px 20px;border-radius:11px;font-size:11px;font-weight:900;border:none;cursor:pointer;background:transparent;color:#94a3b8;font-family:inherit;letter-spacing:.04em;transition:all .2s}
+.tab{padding:6px 20px;border-radius:11px;font-size:11px;font-weight:900;border:none;cursor:pointer;background:transparent;color:#94a3b8;font-family:inherit;transition:all .2s}
 .tab.on{background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.1);color:#4f46e5}
 .tab.on.adm{background:#4f46e5;color:#fff}
 .bud{background:#fff;padding:8px 18px;border-radius:18px;border:1px solid #e2e8f0;display:flex;align-items:center;gap:12px}
@@ -51,7 +44,9 @@ header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.88);backdro
 .dots{display:flex;gap:5px}
 .dot{width:11px;height:11px;border-radius:50%;border:2px solid #e2e8f0;background:#f8fafc;transition:all .3s}
 .dot.on{background:#4f46e5;border-color:#818cf8;transform:scale(1.3)}
-
+.btn-reset{padding:6px 16px;border-radius:11px;font-size:11px;font-weight:900;border:none;cursor:pointer;background:#fff1f2;color:#f43f5e;font-family:inherit;transition:all .2s;display:none}
+.btn-reset.show{display:block}
+.btn-reset:hover{background:#f43f5e;color:#fff}
 main{padding:36px 28px 80px;max-width:1540px;margin:0 auto}
 .done-wrap{display:none;margin-bottom:36px}
 .done-wrap.show{display:block}
@@ -60,7 +55,6 @@ main{padding:36px 28px 80px;max-width:1540px;margin:0 auto}
 .done-banner p{font-size:14px;opacity:.88;max-width:500px;line-height:1.7}
 .done-total{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:24px;padding:18px 32px;text-align:center;flex-shrink:0}
 .done-total .amt{font-size:32px;font-weight:900;font-style:italic;font-variant-numeric:tabular-nums}
-
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:24px}
 .card{background:#fff;border-radius:32px;border:1.5px solid #f1f5f9;overflow:hidden;display:flex;flex-direction:column;transition:transform .3s,box-shadow .3s,border-color .3s;animation:fadein .4s ease both}
 .card:hover{transform:translateY(-7px);box-shadow:0 18px 42px rgba(0,0,0,.09)}
@@ -94,7 +88,6 @@ main{padding:36px 28px 80px;max-width:1540px;margin:0 auto}
 .btn-det{width:100%;padding:13px;border-radius:20px;font-size:12px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;font-family:inherit;transition:all .2s}
 .btn-det.pri{background:linear-gradient(135deg,#4f46e5,#3730a3);color:#fff;box-shadow:0 4px 14px rgba(79,70,229,.28)}
 .btn-det.sec{background:#fff;color:#64748b;border:2px solid #f1f5f9}
-
 .ov{position:fixed;inset:0;z-index:500;background:rgba(15,23,42,.92);backdrop-filter:blur(14px);display:none;align-items:center;justify-content:center;padding:16px;overflow-y:auto}
 .ov.open{display:flex}
 .acard{background:#fff;width:100%;max-width:400px;border-radius:44px;padding:44px 32px;text-align:center;animation:pop .3s ease}
@@ -104,7 +97,6 @@ main{padding:36px 28px 80px;max-width:1540px;margin:0 auto}
 .arow{display:flex;gap:8px}
 .btn-no{flex:1;padding:13px;font-size:12px;font-weight:900;border:none;cursor:pointer;border-radius:16px;background:#f1f5f9;color:#94a3b8;font-family:inherit}
 .btn-yes{flex:2;padding:13px;font-size:12px;font-weight:900;border:none;cursor:pointer;border-radius:16px;background:#4f46e5;color:#fff;font-family:inherit}
-
 .dcard{background:#fff;width:100%;max-width:1020px;border-radius:44px;overflow:hidden;display:flex;flex-direction:column;animation:pop .3s ease;max-height:90vh}
 .dhero{position:relative;width:100%;height:38vh;min-height:180px;background:#f1f5f9;display:flex;align-items:center;justify-content:center;overflow:hidden;border-bottom:1px solid #f1f5f9;flex-shrink:0}
 .dhero img{width:100%;height:100%;object-fit:cover;transition:transform .6s}
@@ -170,9 +162,7 @@ main{padding:36px 28px 80px;max-width:1540px;margin:0 auto}
 #toast.ok{background:rgba(79,70,229,.95)}
 #toast.err{background:rgba(244,63,94,.95)}
 #toast.inf{background:rgba(15,23,42,.95)}
-.btn-reset{padding:7px 18px;border-radius:11px;font-size:11px;font-weight:900;border:none;cursor:pointer;background:#fff1f2;color:#f43f5e;font-family:inherit;transition:all .2s;letter-spacing:.04em;display:none}
-.btn-reset:hover{background:#f43f5e;color:#fff}
-.btn-reset.show{display:block}
+#myStatus{font-size:11px;color:#64748b;margin-top:3px;font-weight:700;display:none}
 @media(max-width:600px){header{padding:9px 14px}main{padding:24px 14px 70px}.dbody{flex-direction:column;padding:18px}.dr{width:100%}.er2{grid-template-columns:1fr}.icard{padding:30px 16px;border-radius:32px}}
 </style>
 </head>
@@ -198,8 +188,8 @@ main{padding:36px 28px 80px;max-width:1540px;margin:0 auto}
     <div class="logo">
       <div class="logo-ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21 4 19 4c-2 0-4 2-4 2l-.5.5L11.2 5.2A2 2 0 0 0 9.5 6L7 9l4.8 2.1L8.5 14.3l-1.8 1 2.7 2.7 1-1.8 3.2-3.3z"/></svg></div>
       <div>
-        <h1>2026 세.모.지 여행지리</h1>
-        <div id="myStatus" style="font-size:11px;color:#64748b;margin-top:3px;font-weight:700;display:none">💰 잔액 <span id="statusRem" style="color:#4f46e5;font-weight:900"></span> | 👥 <span id="statusCnt" style="color:#4f46e5;font-weight:900"></span>명에게 투자 완료</div>
+        <div style="font-size:clamp(15px,2.2vw,20px);font-weight:900;color:#0f172a;letter-spacing:-.02em">2026 세.모.지 여행지리</div>
+        <div id="myStatus"></div>
       </div>
     </div>
     <div class="hdr-r">
@@ -270,7 +260,7 @@ main{padding:36px 28px 80px;max-width:1540px;margin:0 auto}
       <div class="dr">
         <div class="ipan" id="ipan">
           <div class="ih"><div class="isub">Support the Vision</div><div class="it">응원의 투자금</div></div>
-          <div class="inw"><span class="cur">₩</span><input type="number" class="inn" id="inn" placeholder="0"></div>
+          <div class="inw"><span class="cur">₩</span><input type="number" class="inv-inp" id="inn" placeholder="0"></div>
           <div class="qw" id="qw"></div>
           <div class="iacts"><button class="bok dis" id="bok">투자 확정</button><button class="bccl" id="bccl">투자 취소</button></div>
         </div>
@@ -287,24 +277,28 @@ main{padding:36px 28px 80px;max-width:1540px;margin:0 auto}
 
 <div id="toast"></div>
 
-<script>
-const SUPABASE_URL = 'https://lususbuywvfbefxjpezc.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx1c3VzYnV5d3ZmYmVmeGpwZXpjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzMzIwODUsImV4cCI6MjA5MzkwODA4NX0.qMhkbVbp7IN2JLNukRdo7L4kypXksdROAD0WNEM9Lbg';
-const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+import { getFirestore, collection, doc, setDoc, getDoc, onSnapshot, updateDoc, runTransaction, deleteDoc, query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 
-const BUDGET = 5000000, MAX_INV = 3, CMAX = 500, KEY = '2026';
-// ME: 브라우저에 고정된 고유 ID (도메인 변경 무관)
-const ME = (() => {
-  const KEY_UID = 'semoji_uid_v1';
-  let id = localStorage.getItem(KEY_UID);
-  if (!id) {
-    id = 'u_' + Date.now() + '_' + Math.random().toString(36).slice(2);
-    localStorage.setItem(KEY_UID, id);
-  }
-  return id;
-})();
+const firebaseConfig = {
+  apiKey: "AIzaSyCrAQJe_jgiG3l9Vx4bXaP1089eujU6K_4",
+  authDomain: "semoji2026-5a7de.firebaseapp.com",
+  projectId: "semoji2026-5a7de",
+  storageBucket: "semoji2026-5a7de.firebasestorage.app",
+  messagingSenderId: "73398906001",
+  appId: "1:73398906001:web:3c4f2e58aefcc211cb6330"
+};
 
-let adm = false, projs = [], myInvs = [], selP = null, isEd = false;
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+
+const BUDGET = 5000000, MAX_INV = 3, BASE_INV = 1000000, CMAX = 500, KEY = '2026';
+const AID = 'semoji-2026-v1';
+
+let me = null, adm = false, projs = [], myInvs = [], selP = null, isEd = false, subDone = false, initing = false;
 
 const Q = id => document.getElementById(id);
 const fmt = n => '₩' + Number(n).toLocaleString();
@@ -322,7 +316,7 @@ function toast(msg, t = 'ok') {
   tTmr = setTimeout(() => { el.style.display = 'none'; }, 3500);
 }
 
-const getMyInvs = () => myInvs.filter(i => i.user_id === ME);
+const getMyInvs = () => myInvs.filter(i => i.uid === me?.uid);
 const getSpent = () => getMyInvs().reduce((s, i) => s + Number(i.amount), 0);
 const getRem = () => BUDGET - getSpent();
 
@@ -333,71 +327,64 @@ function refreshBudget() {
   Q('budNum').classList.toggle('done', rem === 0);
   Q('dotsEl').querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('on', i < invList.length));
   Q('doneWrap').classList.toggle('show', getSpent() >= BUDGET && !adm);
-  // 왼쪽 상단 현황 업데이트
-  const statusEl = document.getElementById('myStatus');
-  if (statusEl) {
-    if (!adm && invList.length > 0) {
-      statusEl.style.display = 'block';
-      statusEl.innerHTML = '💰 잔액 <b style="color:#4f46e5">' + fmt(rem) + '</b> &nbsp;|&nbsp; 👥 <b style="color:#4f46e5">' + invList.length + '</b>명에게 투자 완료';
-    } else {
-      statusEl.style.display = 'none';
-    }
+  const st = Q('myStatus');
+  if (!adm && invList.length > 0) {
+    st.style.display = 'block';
+    st.innerHTML = '💰 잔액 <b style="color:#4f46e5">' + fmt(rem) + '</b> | 👥 <b style="color:#4f46e5">' + invList.length + '</b>명에게 투자 완료';
+  } else {
+    st.style.display = 'none';
   }
 }
 
 function renderCards() {
   const g = Q('grid'); g.innerHTML = '';
   projs.forEach((p, idx) => {
-    const myInv = myInvs.find(i => i.user_id === ME && i.slot_id === p.slot_id);
+    const myInv = myInvs.find(i => i.uid === me?.uid && i.pid === p.id);
     const c = document.createElement('div');
     c.className = 'card' + (myInv ? ' inv' : '');
     c.style.animationDelay = (idx * 30) + 'ms';
-
-    const imgH = p.image_url ? `<img src="${p.image_url}" alt="">` : `<svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#e2e8f0" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>`;
+    const imgH = p.imageUrl ? `<img src="${p.imageUrl}" alt="">` : `<svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#e2e8f0" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>`;
     const badgeH = myInv ? `<div class="inv-badge"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>` : '';
-    const editH = adm ? `<button class="adm-edit" data-sid="${p.slot_id}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4z"/></svg></button>` : '';
-
+    const editH = adm ? `<button class="adm-edit" data-pid="${p.id}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4z"/></svg></button>` : '';
     let fundH = '';
-    if (adm) fundH = `<div class="fund fadm"><div class="fl">Total Fund Monitoring</div><div class="fv">${fmt(p.total_invested || 0)}</div></div>`;
-    else if (myInv) fundH = `<div class="fund fmy"><div><div class="my-l">나의 투자금</div><div class="my-a">${fmt(myInv.amount)}</div></div><button class="ccl-ic" data-sid="${p.slot_id}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></button></div>`;
+    if (adm) fundH = `<div class="fund fadm"><div class="fl">Total Fund Monitoring</div><div class="fv">${fmt(p.totalInvested || 0)}</div></div>`;
+    else if (myInv) fundH = `<div class="fund fmy"><div><div class="my-l">나의 투자금</div><div class="my-a">${fmt(myInv.amount)}</div></div><button class="ccl-ic" data-pid="${p.id}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></button></div>`;
     else fundH = `<div class="fund fem"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg><p>Roadmap Explorer</p></div>`;
-
-    c.innerHTML = `<div class="cimg">${imgH}${badgeH}${editH}</div><div class="cbody"><div class="cmeta"><div class="cno">#${p.slot_id}</div><div class="cnm">${p.student_name}</div></div><div class="cttl">${p.project_title}</div><div class="cdsc">"${p.description}"</div><div class="cft">${fundH}<button class="btn-det ${myInv ? 'sec' : 'pri'}" data-sid="${p.slot_id}">상세보기 &amp; 투자 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button></div></div>`;
+    c.innerHTML = `<div class="cimg">${imgH}${badgeH}${editH}</div><div class="cbody"><div class="cmeta"><div class="cno">#${p.id}</div><div class="cnm">${p.studentName}</div></div><div class="cttl">${p.projectTitle}</div><div class="cdsc">"${p.description}"</div><div class="cft">${fundH}<button class="btn-det ${myInv ? 'sec' : 'pri'}" data-pid="${p.id}">상세보기 &amp; 투자 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button></div></div>`;
     g.appendChild(c);
   });
-
-  g.querySelectorAll('.btn-det').forEach(b => b.onclick = () => { const p = projs.find(x => x.slot_id === b.dataset.sid); if (p) openDet(p, false); });
-  g.querySelectorAll('.adm-edit').forEach(b => b.onclick = e => { e.stopPropagation(); const p = projs.find(x => x.slot_id === b.dataset.sid); if (p) openDet(p, true); });
-  g.querySelectorAll('.ccl-ic').forEach(b => b.onclick = () => doCancelInv(b.dataset.sid));
+  g.querySelectorAll('.btn-det').forEach(b => b.onclick = () => { const p = projs.find(x => x.id === b.dataset.pid); if (p) openDet(p, false); });
+  g.querySelectorAll('.adm-edit').forEach(b => b.onclick = e => { e.stopPropagation(); const p = projs.find(x => x.id === b.dataset.pid); if (p) openDet(p, true); });
+  g.querySelectorAll('.ccl-ic').forEach(b => b.onclick = () => doCancelInv(b.dataset.pid));
 }
 
 function openDet(p, editMode) {
   selP = p; isEd = false;
-  if (p.image_url) { Q('dimg').src = p.image_url; Q('dimg').style.display = 'block'; Q('dph').style.display = 'none'; }
+  if (p.imageUrl) { Q('dimg').src = p.imageUrl; Q('dimg').style.display = 'block'; Q('dph').style.display = 'none'; }
   else { Q('dimg').style.display = 'none'; Q('dph').style.display = 'flex'; }
-  if (adm) { Q('iovl').style.display = 'flex'; Q('imgFile').onchange = e => doImgUpload(p.slot_id, e); }
+  if (adm) { Q('iovl').style.display = 'flex'; Q('imgFile').onchange = e => doImgUpload(p.id, e); }
   else Q('iovl').style.display = 'none';
   Q('btnEd').style.display = adm ? 'flex' : 'none';
   fillView(p); setEdMode(editMode);
-  const myInv = myInvs.find(i => i.user_id === ME && i.slot_id === p.slot_id);
+  const myInv = myInvs.find(i => i.uid === me?.uid && i.pid === p.id);
   if (!adm) {
     Q('ipan').style.display = 'flex'; Q('mon').style.display = 'none';
     buildQ(); Q('inn').value = ''; updateOk();
     Q('bccl').classList.toggle('show', !!myInv);
   } else {
     Q('ipan').style.display = 'none'; Q('mon').style.display = 'flex';
-    Q('mamt').textContent = fmt(p.total_invested || 0);
+    Q('mamt').textContent = fmt(p.totalInvested || 0);
   }
   Q('detOv').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
 function closeDet() { Q('detOv').classList.remove('open'); document.body.style.overflow = ''; selP = null; isEd = false; }
-function fillView(p) { Q('dttl').textContent = p.project_title; Q('dnm').textContent = p.student_name; Q('ddsc').textContent = `"${p.description}"`; }
+function fillView(p) { Q('dttl').textContent = p.projectTitle; Q('dnm').textContent = p.studentName; Q('ddsc').textContent = `"${p.description}"`; }
 function setEdMode(on) {
   isEd = on; Q('vw').style.display = on ? 'none' : 'block'; Q('ed').style.display = on ? 'block' : 'none';
   Q('btnEdX').style.display = on ? 'inline-flex' : 'none';
   if (on) {
-    Q('enm').value = selP.student_name; Q('ett').value = selP.project_title; Q('eds').value = selP.description; updCC();
+    Q('enm').value = selP.studentName; Q('ett').value = selP.projectTitle; Q('eds').value = selP.description; updCC();
     Q('btnEd').innerHTML = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> 저장하기`;
     Q('btnEd').className = 'etgl sv';
   } else {
@@ -411,96 +398,74 @@ function buildQ() {
   [100000, 500000, 1000000].forEach(v => {
     const b = document.createElement('button'); b.className = 'qb';
     b.textContent = `+${v / 10000}만`;
-    b.onclick = () => {
-      const cur = parseInt(Q('inn').value) || 0;
-      const next = Math.min(cur + v, rem);
-      Q('inn').value = next; updateOk();
-    };
+    b.onclick = () => { const cur = parseInt(Q('inn').value) || 0; Q('inn').value = Math.min(cur + v, rem); updateOk(); };
     Q('qw').appendChild(b);
   });
-  const mx = document.createElement('button'); mx.className = 'qb mx'; mx.textContent = '최대 투자'; mx.onclick = () => { Q('inn').value = rem; updateOk(); }; Q('qw').appendChild(mx);
+  const mx = document.createElement('button'); mx.className = 'qb mx'; mx.textContent = '최대 투자';
+  mx.onclick = () => { Q('inn').value = rem; updateOk(); }; Q('qw').appendChild(mx);
 }
-function updateOk() {
-  const v = parseInt(Q('inn').value);
-  const rem = getRem();
-  Q('bok').className = 'bok ' + (v && v > 0 && v <= rem && rem > 0 ? 'act' : 'dis');
-  if (v > rem) { Q('inn').style.borderColor = '#f43f5e'; } else { Q('inn').style.borderColor = ''; }
-}
+function updateOk() { const v = parseInt(Q('inn').value); Q('bok').className = 'bok ' + (v && v > 0 && v <= getRem() ? 'act' : 'dis'); }
 
 async function doInvest() {
   const amount = parseInt(Q('inn').value);
   if (!amount || amount <= 0) { toast('금액을 입력해주세요.', 'err'); return; }
 
   try {
-    // 서버에서 내 최신 투자 내역 가져오기
-    const { data: freshInvs, error: e1 } = await sb.from('investments').select('*').eq('user_id', ME);
-    if (e1) throw e1;
+    await runTransaction(db, async tx => {
+      // 현재 내 투자 내역 확인
+      const invCol = collection(db, 'artifacts', AID, 'users', me.uid, 'investments');
+      const myInvSnap = await getDocs(invCol);
+      const myInvList = myInvSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+      const freshSpent = myInvList.reduce((s, i) => s + Number(i.amount), 0);
+      const freshRem = BUDGET - freshSpent;
 
-    const myList = freshInvs || [];
-    const freshSpent = myList.reduce((s, i) => s + Number(i.amount), 0);
-    const freshRem = BUDGET - freshSpent;
-
-    // 잔액 초과 체크
-    if (amount > freshRem) {
-      if (freshRem <= 0) {
-        toast('투자 가능한 잔액이 없습니다.', 'err');
-      } else {
-        toast('잔액 초과! 최대 ' + fmt(freshRem) + ' 까지 투자 가능합니다.', 'err');
-        Q('inn').value = freshRem;
-        updateOk();
+      if (amount > freshRem) {
+        throw new Error('잔액 초과! 최대 ' + fmt(freshRem) + ' 까지 투자 가능합니다.');
       }
-      return;
-    }
 
-    // 최대 투자 인원 체크
-    const myInv = myList.find(i => String(i.slot_id) === String(selP.slot_id));
-    if (myList.length >= MAX_INV && !myInv) {
-      toast('최대 3명까지만 투자 가능합니다.', 'err');
-      return;
-    }
+      const existing = myInvList.find(i => i.id === selP.id);
+      if (myInvList.length >= MAX_INV && !existing) {
+        throw new Error('최대 3명까지만 투자 가능합니다.');
+      }
 
-    // 투자 실행
-    if (myInv) {
-      await sb.from('investments').update({ amount: Number(myInv.amount) + amount }).eq('id', myInv.id);
-    } else {
-      await sb.from('investments').insert({ user_id: ME, slot_id: String(selP.slot_id), amount });
-    }
+      const iRef = doc(db, 'artifacts', AID, 'users', me.uid, 'investments', selP.id);
+      const pRef = doc(db, 'artifacts', AID, 'public', 'data', 'projects', selP.id);
+      const pSnap = await tx.get(pRef);
 
-    // 프로젝트 총 투자금 업데이트
-    const curProj = projs.find(p => String(p.slot_id) === String(selP.slot_id));
-    await sb.from('projects').update({ total_invested: Number((curProj && curProj.total_invested) || 1000000) + amount }).eq('slot_id', selP.slot_id);
-
-    await loadAll();
-    toast('투자가 완료되었습니다!', 'ok');
-    closeDet();
+      tx.set(iRef, { amount: (existing ? Number(existing.amount) : 0) + amount, updatedAt: Date.now() }, { merge: true });
+      tx.update(pRef, { totalInvested: (pSnap.data().totalInvested || 0) + amount });
+    });
+    toast('투자가 완료되었습니다!', 'ok'); closeDet();
   } catch (e) {
-    console.error('투자 오류:', e);
-    toast('투자 처리 중 오류가 발생했습니다.', 'err');
+    toast(e.message || '투자 처리 중 오류가 발생했습니다.', 'err');
   }
 }
 
-async function doCancelInv(sid) {
-  const myInv = myInvs.find(i => i.user_id === ME && i.slot_id === sid);
+async function doCancelInv(pid) {
+  const myInv = myInvs.find(i => i.uid === me?.uid && i.pid === pid);
   if (!myInv) return;
   try {
-    const proj = projs.find(p => p.slot_id === sid);
-    await sb.from('investments').delete().eq('id', myInv.id);
-    await sb.from('projects').update({ total_invested: Math.max(0, (proj.total_invested || 0) - myInv.amount) }).eq('slot_id', sid);
-    await loadAll();
+    await runTransaction(db, async tx => {
+      const iRef = doc(db, 'artifacts', AID, 'users', me.uid, 'investments', pid);
+      const pRef = doc(db, 'artifacts', AID, 'public', 'data', 'projects', pid);
+      const pSnap = await tx.get(pRef);
+      tx.delete(iRef);
+      tx.update(pRef, { totalInvested: Math.max(0, (pSnap.data().totalInvested || 0) - Number(myInv.amount)) });
+    });
     toast('투자가 철회되었습니다.', 'inf');
-  } catch (e) { console.error(e); toast('처리 중 오류 발생', 'err'); }
+  } catch (e) { toast('처리 중 오류 발생', 'err'); }
 }
 
-async function doImgUpload(sid, e) {
+async function doImgUpload(pid, e) {
   const file = e.target.files[0]; if (!file) return;
   if (file.size > 800000) { toast('800KB 이하 이미지를 사용해주세요.', 'err'); return; }
   const r = new FileReader();
   r.onloadend = async () => {
     try {
-      await sb.from('projects').update({ image_url: r.result }).eq('slot_id', sid);
+      await updateDoc(doc(db, 'artifacts', AID, 'public', 'data', 'projects', pid), { imageUrl: r.result, updatedAt: Date.now() });
       Q('dimg').src = r.result; Q('dimg').style.display = 'block'; Q('dph').style.display = 'none';
-      await loadAll(); toast('이미지 업로드 완료', 'ok');
-    } catch (e) { console.error(e); toast('저장 실패', 'err'); }
+      toast('이미지 업로드 완료', 'ok');
+    } catch { toast('저장 실패', 'err'); }
   }; r.readAsDataURL(file);
 }
 
@@ -509,11 +474,10 @@ async function saveProfile() {
   const nm = Q('enm').value.trim(), tt = Q('ett').value.trim(), ds = Q('eds').value.trim();
   if (!nm || !tt) { toast('이름과 제목을 입력해주세요.', 'err'); return; }
   try {
-    await sb.from('projects').update({ student_name: nm, project_title: tt, description: ds }).eq('slot_id', selP.slot_id);
-    await loadAll();
-    selP = projs.find(p => p.slot_id === selP.slot_id);
+    await updateDoc(doc(db, 'artifacts', AID, 'public', 'data', 'projects', selP.id), { studentName: nm, projectTitle: tt, description: ds, updatedAt: Date.now() });
+    selP = { ...selP, studentName: nm, projectTitle: tt, description: ds };
     fillView(selP); setEdMode(false); toast('저장되었습니다.', 'ok');
-  } catch (e) { console.error(e); toast('수정 실패', 'err'); }
+  } catch { toast('수정 실패', 'err'); }
 }
 
 function setAdm(on) {
@@ -525,46 +489,46 @@ function setAdm(on) {
 }
 
 async function doReset() {
-  if (!confirm('모든 투자 데이터를 초기화할까요? 이 작업은 되돌릴 수 없습니다.')) return;
+  if (!confirm('모든 투자 데이터를 초기화할까요?')) return;
   try {
-    // 모든 투자 삭제
-    await sb.from('investments').delete().neq('id', 0);
-    // 모든 프로젝트 투자금 100만원으로 초기화
-    await sb.from('projects').update({ total_invested: 1000000 }).neq('slot_id', '');
-    await loadAll();
-    toast('전체 투자 데이터가 초기화되었습니다.', 'ok');
-  } catch (e) { console.error(e); toast('리셋 실패', 'err'); }
+    // 모든 프로젝트 총투자금 100만원으로 초기화
+    const projCol = collection(db, 'artifacts', AID, 'public', 'data', 'projects');
+    const projSnap = await getDocs(projCol);
+    const batch = [];
+    projSnap.docs.forEach(d => { batch.push(updateDoc(d.ref, { totalInvested: BASE_INV })); });
+    await Promise.all(batch);
+    toast('초기화 완료!', 'ok');
+  } catch { toast('초기화 실패', 'err'); }
 }
 
-async function loadAll() {
-  const [{ data: p }, { data: i }] = await Promise.all([
-    sb.from('projects').select('*').order('id'),
-    sb.from('investments').select('*')
-  ]);
-  // 중복 제거: slot_id 기준으로 첫번째만 유지
-  const seen = new Set();
-  projs = (p || []).filter(x => {
-    if (seen.has(x.slot_id)) return false;
-    seen.add(x.slot_id);
-    return true;
-  });
-  myInvs = i || [];
-  renderCards();
-  refreshBudget();
-}
+function subscribe(user) {
+  let first = true;
+  const projCol = collection(db, 'artifacts', AID, 'public', 'data', 'projects');
+  onSnapshot(projCol, async snap => {
+    if (snap.empty && !initing) {
+      initing = true;
+      try {
+        for (let i = 1; i <= 11; i++) {
+          await setDoc(doc(db, 'artifacts', AID, 'public', 'data', 'projects', String(i)), {
+            studentName: `여행자 ${i}`, projectTitle: `나의 꿈 진로 여행 계획 ${i}`,
+            description: '미래의 꿈을 찾아 떠나는 특별한 여행 계획입니다.',
+            imageUrl: null, totalInvested: BASE_INV, updatedAt: Date.now()
+          });
+        }
+      } catch (e) { console.error(e); } finally { initing = false; }
+      return;
+    }
+    projs = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => parseInt(a.id) - parseInt(b.id));
+    renderCards(); refreshBudget();
+    if (first) { first = false; showOverlay('intro'); }
+  }, err => { console.error(err); showOverlay('intro'); });
 
-// 실시간 구독
-sb.channel('realtime').on('postgres_changes', { event: '*', schema: 'public' }, () => loadAll()).subscribe();
-
-async function init() {
-  try {
-    await loadAll();
-    showOverlay('intro');
-  } catch (e) {
-    console.error(e);
-    toast('데이터 로드 실패', 'err');
-    showOverlay('intro');
-  }
+  const invCol = collection(db, 'artifacts', AID, 'users', user.uid, 'investments');
+  onSnapshot(invCol, snap => {
+    myInvs = snap.docs.map(d => ({ uid: user.uid, pid: d.id, ...d.data() }));
+    renderCards(); refreshBudget();
+    if (selP && !adm) Q('bccl').classList.toggle('show', !!myInvs.find(i => i.uid === user.uid && i.pid === selP.id));
+  }, err => console.error(err));
 }
 
 Q('btnStart').onclick = () => showOverlay('none');
@@ -575,7 +539,6 @@ Q('admOv').onclick = e => { if (e.target === Q('admOv')) Q('admOv').classList.re
 Q('pwEl').onkeydown = e => { if (e.key === 'Enter') chkAdm(); };
 Q('btnAdmYes').onclick = chkAdm;
 function chkAdm() { if (Q('pwEl').value === KEY) { Q('admOv').classList.remove('open'); Q('pwEl').value = ''; setAdm(true); toast('관리자 모드로 전환되었습니다.', 'ok'); } else toast('비밀번호가 올바르지 않습니다.', 'err'); }
-Q('btnReset').onclick = doReset;
 Q('btnX').onclick = closeDet;
 Q('detOv').onclick = e => { if (e.target === Q('detOv')) closeDet(); };
 Q('btnEd').onclick = () => { if (isEd) saveProfile(); else setEdMode(true); };
@@ -583,9 +546,17 @@ Q('btnEdX').onclick = () => setEdMode(false);
 Q('eds').oninput = updCC;
 Q('inn').oninput = updateOk;
 Q('bok').onclick = () => { if (Q('bok').classList.contains('act')) doInvest(); };
-Q('bccl').onclick = () => { if (selP) { doCancelInv(selP.slot_id); closeDet(); } };
+Q('bccl').onclick = () => { if (selP) { doCancelInv(selP.id); closeDet(); } };
+Q('btnReset').onclick = doReset;
 
-init();
+onAuthStateChanged(auth, user => {
+  if (user && !subDone) { subDone = true; me = user; subscribe(user); }
+});
+signInAnonymously(auth).catch(err => {
+  console.error(err); showOverlay('intro');
+  toast('Firebase 익명 로그인을 활성화해주세요.', 'err');
+});
+setTimeout(() => { if (!Q('overlay').classList.contains('hide')) showOverlay('intro'); }, 15000);
 </script>
 </body>
 </html>
