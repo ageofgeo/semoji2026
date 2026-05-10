@@ -467,8 +467,8 @@ async function doInvest() {
     }
 
     // 프로젝트 총 투자금 업데이트
-    const { data: proj } = await sb.from('projects').select('total_invested').eq('slot_id', selP.slot_id).single();
-    await sb.from('projects').update({ total_invested: Number(proj.total_invested || 0) + amount }).eq('slot_id', selP.slot_id);
+    const curProj = projs.find(p => String(p.slot_id) === String(selP.slot_id));
+    await sb.from('projects').update({ total_invested: Number((curProj && curProj.total_invested) || 1000000) + amount }).eq('slot_id', selP.slot_id);
 
     await loadAll();
     toast('투자가 완료되었습니다!', 'ok');
