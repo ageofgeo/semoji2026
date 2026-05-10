@@ -139,7 +139,7 @@ main{padding:36px 28px 80px;max-width:1540px;margin:0 auto}
 .it{font-size:18px;font-weight:900;color:#1e293b;text-transform:uppercase}
 .inw{position:relative;margin-bottom:14px}
 .cur{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:24px;font-weight:900;font-style:italic;color:#cbd5e1;pointer-events:none}
-.inn{width:100%;padding:18px 12px 18px 42px;border:2.5px solid transparent;border-radius:20px;font-size:32px;font-weight:900;outline:none;background:#fff;transition:border-color .2s;font-family:inherit;font-variant-numeric:tabular-nums;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.inn{width:100%;padding:18px 12px 18px 52px;border:2.5px solid transparent;border-radius:20px;font-size:32px;font-weight:900;outline:none;background:#fff;transition:border-color .2s;font-family:inherit;font-variant-numeric:tabular-nums;box-shadow:0 2px 8px rgba(0,0,0,.06)}
 .inn:focus{border-color:#4f46e5}
 .qw{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:auto}
 .qb{padding:10px;border-radius:12px;font-size:10px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;border:1px solid #e2e8f0;background:#fff;color:#64748b;cursor:pointer;transition:all .2s;font-family:inherit}
@@ -283,7 +283,7 @@ import { getFirestore, collection, doc, setDoc, getDoc, onSnapshot, updateDoc, r
 import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCrAQJe_jgiG3l9Vx4bXaP1089eujU6K_4",
+  apiKey: "AIzaSyCrAQJe_jgiG3l9Vx4bXaP1O89eujU6K_4",
   authDomain: "semoji2026-5a7de.firebaseapp.com",
   projectId: "semoji2026-5a7de",
   storageBucket: "semoji2026-5a7de.firebasestorage.app",
@@ -541,22 +541,4 @@ Q('btnAdmYes').onclick = chkAdm;
 function chkAdm() { if (Q('pwEl').value === KEY) { Q('admOv').classList.remove('open'); Q('pwEl').value = ''; setAdm(true); toast('관리자 모드로 전환되었습니다.', 'ok'); } else toast('비밀번호가 올바르지 않습니다.', 'err'); }
 Q('btnX').onclick = closeDet;
 Q('detOv').onclick = e => { if (e.target === Q('detOv')) closeDet(); };
-Q('btnEd').onclick = () => { if (isEd) saveProfile(); else setEdMode(true); };
-Q('btnEdX').onclick = () => setEdMode(false);
-Q('eds').oninput = updCC;
-Q('inn').oninput = updateOk;
-Q('bok').onclick = () => { if (Q('bok').classList.contains('act')) doInvest(); };
-Q('bccl').onclick = () => { if (selP) { doCancelInv(selP.id); closeDet(); } };
-Q('btnReset').onclick = doReset;
-
-onAuthStateChanged(auth, user => {
-  if (user && !subDone) { subDone = true; me = user; subscribe(user); }
-});
-signInAnonymously(auth).catch(err => {
-  console.error(err); showOverlay('intro');
-  toast('Firebase 익명 로그인을 활성화해주세요.', 'err');
-});
-setTimeout(() => { if (!Q('overlay').classList.contains('hide')) showOverlay('intro'); }, 15000);
-</script>
-</body>
-</html>
+Q('btnEd').onclick = () => { if (isEd) saveProfile(); else setEdM
