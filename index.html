@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026 세.모.지 여행지리</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans KR',sans-serif;background:#f8fafc;color:#1e293b}
+input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+@keyframes fadein{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes pop{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
+
+#overlay{position:fixed;inset:0;z-index:999;background:#0f172a;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;transition:opacity .5s}
+#overlay.hide{opacity:0;pointer-events:none}
+#overlay .sp{animation:spin 1s linear infinite}
+#overlay p{color:#818cf8;font-weight:900;font-size:11px;letter-spacing:.2em;animation:pulse 2s ease-in-out infinite}
+
+#intro{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:24px;
+  background:radial-gradient(circle at 20% 20%,rgba(79,70,229,.3),transparent 55%),radial-gradient(circle at 80% 80%,rgba(59,130,246,.2),transparent 55%),#0f172a;
+  transition:opacity .4s}
+#intro.hide{opacity:0;pointer-events:none}
+.icard{max-width:800px;width:100%;text-align:center;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:44px;padding:48px 40px;backdrop-filter:blur(20px);animation:pop .5s ease}
+.icard h2{font-size:clamp(20px,4vw,38px);font-weight:900;color:#fff;line-height:1.3;margin:20px 0 16px}
+.icard .sub{color:#94a3b8;font-size:clamp(14px,2vw,17px);line-height:1.8;margin-bottom:20px}
+.icard .quote{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:22px 26px;color:#e2e8f0;font-style:italic;line-height:2.1;margin-bottom:32px}
+.qg{color:#34d399;font-weight:900;font-style:normal}
+.qb{color:#818cf8;font-weight:700;font-style:normal;text-decoration:underline;text-underline-offset:4px}
+.btn-go{display:inline-flex;align-items:center;gap:10px;background:#fff;color:#0f172a;border:none;cursor:pointer;padding:15px 38px;border-radius:22px;font-size:16px;font-weight:900;box-shadow:0 10px 28px rgba(0,0,0,.4);transition:transform .2s;font-family:inherit}
+.btn-go:hover{transform:scale(1.04)}
+.btn-go:active{transform:scale(.97)}
+
+#app{min-height:100vh}
+header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.88);backdrop-filter:blur(18px);border-bottom:1px solid #e2e8f0;padding:12px 28px;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px}
+.logo{display:flex;align-items:center;gap:12px}
+.logo-ic{background:#4f46e5;border-radius:14px;padding:8px;display:flex}
+.logo h1{font-size:clamp(15px,2.2vw,20px);font-weight:900;color:#0f172a;letter-spacing:-.02em}
+.hdr-r{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.tabs{display:flex;background:#f1f5f9;padding:3px;border-radius:14px;border:1px solid #e2e8f0}
+.tab{padding:6px 20px;border-radius:11px;font-size:11px;font-weight:900;border:none;cursor:pointer;background:transparent;color:#94a3b8;font-family:inherit;letter-spacing:.04em;transition:all .2s}
+.tab.on{background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.1);color:#4f46e5}
+.tab.on.adm{background:#4f46e5;color:#fff}
+.bud{background:#fff;padding:8px 18px;border-radius:18px;border:1px solid #e2e8f0;display:flex;align-items:center;gap:12px}
+.bud-lbl{font-size:9px;font-weight:700;color:#94a3b8;letter-spacing:.1em;text-transform:uppercase;margin-bottom:2px}
+.bud-num{font-size:clamp(16px,2.2vw,22px);font-weight:900;color:#3730a3;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.bud-num.done{color:#10b981}
+.dots{display:flex;gap:5px}
+.dot{width:11px;height:11px;border-radius:50%;border:2px solid #e2e8f0;background:#f8fafc;transition:all .3s}
+.dot.on{background:#4f46e5;border-color:#818cf8;transform:scale(1.3)}
+
+main{padding:36px 28px 80px;max-width:1540px;margin:0 auto}
+.done-wrap{display:none;margin-bottom:36px}
+.done-wrap.show{display:block}
+.done-banner{background:linear-gradient(135deg,#059669,#4338ca);border-radius:40px;padding:40px 32px;color:#fff;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:18px}
+.done-banner h3{font-size:clamp(18px,3vw,34px);font-weight:900;margin-bottom:7px}
+.done-banner p{font-size:14px;opacity:.88;max-width:500px;line-height:1.7}
+.done-total{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:24px;padding:18px 32px;text-align:center;flex-shrink:0}
+.done-total .amt{font-size:32px;font-weight:900;font-style:italic;font-variant-numeric:tabular-nums}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:24px}
+.card{background:#fff;border-radius:32px;border:1.5px solid #f1f5f9;overflow:hidden;display:flex;flex-direction:column;transition:transform .3s,box-shadow .3s,border-color .3s;animation:fadein .4s ease both}
+.card:hover{transform:translateY(-7px);box-shadow:0 18px 42px rgba(0,0,0,.09)}
+.card.inv{border-color:#4f46e5;box-shadow:0 0 0 6px rgba(79,70,229,.08)}
+.card.inv:hover{transform:none}
+.cimg{position:relative;aspect-ratio:16/9;background:#f1f5f9;display:flex;align-items:center;justify-content:center;overflow:hidden;border-bottom:1px solid #f1f5f9}
+.cimg img{width:100%;height:100%;object-fit:cover;transition:transform .6s}
+.card:hover .cimg img{transform:scale(1.05)}
+.inv-badge{position:absolute;top:10px;right:10px;background:#4f46e5;color:#fff;border-radius:12px;padding:8px;border:2px solid rgba(255,255,255,.25)}
+.adm-edit{position:absolute;bottom:10px;left:10px;background:rgba(255,255,255,.9);border:none;border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;color:#1e293b}
+.adm-edit:hover{background:#0f172a;color:#fff}
+.cbody{padding:22px;flex-grow:1;display:flex;flex-direction:column}
+.cmeta{display:flex;align-items:center;gap:7px;margin-bottom:13px;padding-bottom:13px;border-bottom:1px solid #f8fafc}
+.cno{background:#e0e7ff;color:#4f46e5;border-radius:8px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;flex-shrink:0}
+.cnm{font-size:13px;font-weight:700;color:#94a3b8;font-style:italic}
+.cttl{font-size:16px;font-weight:900;color:#0f172a;margin-bottom:8px;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;transition:color .2s}
+.card:hover .cttl{color:#4f46e5}
+.cdsc{font-size:12px;color:#64748b;font-style:italic;line-height:1.8;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:16px}
+.cft{margin-top:auto;display:flex;flex-direction:column;gap:10px}
+.fund{border-radius:22px;padding:16px 20px;min-height:78px;display:flex;align-items:center;justify-content:center}
+.fadm{background:#0f172a;flex-direction:column;gap:3px;text-align:center}
+.fadm .fl{font-size:8px;font-weight:900;color:#818cf8;text-transform:uppercase;letter-spacing:.12em;font-style:italic}
+.fadm .fv{font-size:24px;font-weight:900;font-style:italic;color:#fff;font-variant-numeric:tabular-nums}
+.fmy{background:#e0e7ff;border:2px solid #c7d2fe;justify-content:space-between}
+.fem{background:rgba(248,250,252,.6);opacity:.18;flex-direction:column;gap:4px}
+.fem p{font-size:8px;font-weight:900;text-transform:uppercase;letter-spacing:.3em;font-style:italic}
+.my-l{font-size:8px;font-weight:900;color:#6366f1;text-transform:uppercase;letter-spacing:.1em;margin-bottom:2px}
+.my-a{font-size:22px;font-weight:900;color:#312e81;font-variant-numeric:tabular-nums}
+.ccl-ic{background:#fff;border:none;cursor:pointer;border-radius:12px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;color:#f43f5e;box-shadow:0 2px 7px rgba(0,0,0,.1);transition:all .2s;flex-shrink:0}
+.ccl-ic:hover{background:#f43f5e;color:#fff}
+.btn-det{width:100%;padding:13px;border-radius:20px;font-size:12px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;font-family:inherit;transition:all .2s}
+.btn-det.pri{background:linear-gradient(135deg,#4f46e5,#3730a3);color:#fff;box-shadow:0 4px 14px rgba(79,70,229,.28)}
+.btn-det.sec{background:#fff;color:#64748b;border:2px solid #f1f5f9}
+
+.ov{position:fixed;inset:0;z-index:500;background:rgba(15,23,42,.92);backdrop-filter:blur(14px);display:none;align-items:center;justify-content:center;padding:16px;overflow-y:auto}
+.ov.open{display:flex}
+.acard{background:#fff;width:100%;max-width:400px;border-radius:44px;padding:44px 32px;text-align:center;animation:pop .3s ease}
+.acard h3{font-size:26px;font-weight:900;color:#0f172a;margin:16px 0 10px}
+.pw{width:100%;padding:22px;background:#f8fafc;border:2.5px solid transparent;border-radius:18px;text-align:center;font-size:30px;font-weight:900;letter-spacing:.4em;outline:none;transition:border-color .2s;margin-bottom:22px;font-family:inherit}
+.pw:focus{border-color:#4f46e5}
+.arow{display:flex;gap:8px}
+.btn-no{flex:1;padding:13px;font-size:12px;font-weight:900;border:none;cursor:pointer;border-radius:16px;background:#f1f5f9;color:#94a3b8;font-family:inherit}
+.btn-yes{flex:2;padding:13px;font-size:12px;font-weight:900;border:none;cursor:pointer;border-radius:16px;background:#4f46e5;color:#fff;font-family:inherit}
+
+.dcard{background:#fff;width:100%;max-width:1020px;border-radius:44px;overflow:hidden;display:flex;flex-direction:column;animation:pop .3s ease;max-height:90vh}
+.dhero{position:relative;width:100%;height:38vh;min-height:180px;background:#f1f5f9;display:flex;align-items:center;justify-content:center;overflow:hidden;border-bottom:1px solid #f1f5f9;flex-shrink:0}
+.dhero img{width:100%;height:100%;object-fit:cover;transition:transform .6s}
+.dhero:hover img{transform:scale(1.04)}
+.dph{display:flex;flex-direction:column;align-items:center;gap:10px;color:#e2e8f0}
+.dph p{font-size:9px;font-weight:900;letter-spacing:1em;color:#94a3b8;font-style:italic;text-transform:uppercase}
+.iovl{position:absolute;inset:0;background:rgba(0,0,0,.55);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;opacity:0;transition:opacity .3s;cursor:pointer;gap:12px}
+.dhero:hover .iovl{opacity:1}
+.iovl span{font-size:13px;font-weight:900;letter-spacing:.3em;text-transform:uppercase;text-decoration:underline;text-underline-offset:4px}
+.xbtn{position:absolute;top:13px;right:13px;background:rgba(255,255,255,.15);border:none;color:#fff;width:50px;height:50px;border-radius:50%;font-size:19px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s}
+.xbtn:hover{background:rgba(255,255,255,.28)}
+.dbody{padding:32px;display:flex;flex-wrap:wrap;gap:32px;overflow-y:auto}
+.dl{flex:1;min-width:240px}
+.dr{width:300px;flex-shrink:0;display:flex;flex-direction:column}
+.trow{display:flex;align-items:center;gap:8px;margin-bottom:22px;flex-wrap:wrap}
+.tag{background:#e0e7ff;color:#4f46e5;font-size:9px;font-weight:900;border-radius:50px;padding:5px 14px;letter-spacing:.3em;text-transform:uppercase;font-style:italic;border:1px solid #c7d2fe}
+.etgl{display:flex;align-items:center;gap:5px;padding:5px 14px;border-radius:50px;font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:.1em;border:none;cursor:pointer;font-family:inherit;transition:all .2s}
+.etgl.sv{background:#10b981;color:#fff}
+.etgl.ed{background:#f1f5f9;color:#64748b}
+.cecl{background:none;border:none;cursor:pointer;color:#cbd5e1;padding:2px;transition:color .2s}
+.cecl:hover{color:#f43f5e}
+.dttl{font-size:clamp(22px,4vw,48px);font-weight:900;color:#0f172a;line-height:1.15;letter-spacing:-.03em;margin-bottom:22px}
+.arow2{display:flex;align-items:center;gap:12px;margin-bottom:26px;padding-bottom:26px;border-bottom:1px solid #f8fafc}
+.aav{width:50px;height:50px;border-radius:15px;background:#4f46e5;display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0}
+.asub{font-size:8px;font-weight:900;color:#4f46e5;text-transform:uppercase;letter-spacing:.4em;margin-bottom:3px;font-style:italic}
+.anm{font-size:26px;font-weight:700;color:#1e293b;letter-spacing:-.03em}
+.ddsc{background:rgba(248,250,252,.6);border:1px solid #f1f5f9;border-radius:24px;padding:26px;font-size:14px;font-style:italic;color:#475569;line-height:2}
+.eform{display:flex;flex-direction:column;gap:14px}
+.er2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fg{display:flex;flex-direction:column;gap:4px}
+.flbl{font-size:9px;font-weight:900;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;font-style:italic;margin-left:4px}
+.fi,.ft{background:#f8fafc;border:2.5px solid transparent;border-radius:16px;padding:11px 14px;font-size:15px;font-weight:700;color:#0f172a;outline:none;transition:border-color .2s;font-family:inherit}
+.fi:focus,.ft:focus{border-color:#4f46e5}
+.ft{resize:vertical;font-size:13px;font-weight:400;line-height:1.8;min-height:120px}
+.ccnt{font-size:9px;font-weight:900;color:#cbd5e1;align-self:flex-end;margin-right:4px}
+.ccnt.ov{color:#f43f5e}
+.ipan{background:rgba(248,250,252,.9);border:1px solid #f1f5f9;border-radius:28px;padding:24px;flex-grow:1;display:flex;flex-direction:column}
+.ih{text-align:center;margin-bottom:14px}
+.isub{font-size:8px;font-weight:900;color:#4f46e5;text-transform:uppercase;letter-spacing:.15em;font-style:italic;margin-bottom:4px}
+.it{font-size:18px;font-weight:900;color:#1e293b;text-transform:uppercase}
+.inw{position:relative;margin-bottom:14px}
+.cur{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:24px;font-weight:900;font-style:italic;color:#cbd5e1;pointer-events:none}
+.inn{width:100%;padding:18px 12px 18px 42px;border:2.5px solid transparent;border-radius:20px;font-size:32px;font-weight:900;outline:none;background:#fff;transition:border-color .2s;font-family:inherit;font-variant-numeric:tabular-nums;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.inn:focus{border-color:#4f46e5}
+.qw{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:auto}
+.qb{padding:10px;border-radius:12px;font-size:10px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;border:1px solid #e2e8f0;background:#fff;color:#64748b;cursor:pointer;transition:all .2s;font-family:inherit}
+.qb:hover{border-color:#4f46e5;color:#4f46e5}
+.qb.mx{background:#4f46e5;color:#fff;grid-column:1/-1;border-color:transparent}
+.iacts{margin-top:14px;display:flex;flex-direction:column;gap:7px}
+.bok{width:100%;padding:16px;border-radius:20px;font-size:15px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;border:none;cursor:pointer;font-family:inherit;transition:all .2s}
+.bok.act{background:linear-gradient(135deg,#4f46e5,#2563eb);color:#fff;box-shadow:0 7px 20px rgba(79,70,229,.32)}
+.bok.dis{background:#f1f5f9;color:#94a3b8;cursor:default}
+.bccl{width:100%;padding:10px;border-radius:16px;font-size:10px;font-weight:900;letter-spacing:.25em;text-transform:uppercase;cursor:pointer;background:#fff1f2;color:#f43f5e;border:2px solid #fecdd3;font-family:inherit;transition:all .2s;display:none}
+.bccl:hover{background:#f43f5e;color:#fff}
+.bccl.show{display:block}
+.mon{background:#0f172a;border-radius:28px;padding:32px;text-align:center;border:5px solid rgba(79,70,229,.12);flex-grow:1;display:flex;flex-direction:column;justify-content:center}
+.mlbl{font-size:9px;font-weight:900;color:#818cf8;text-transform:uppercase;letter-spacing:.4em;font-style:italic;margin-bottom:16px;animation:pulse 2s ease-in-out infinite}
+.mamt{font-size:clamp(28px,5vw,56px);font-weight:900;font-style:italic;font-variant-numeric:tabular-nums;background:linear-gradient(135deg,#60a5fa,#818cf8,#67e8f9);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.1;margin-bottom:6px}
+.mdiv{width:36px;height:2px;background:#4338ca;border-radius:2px;margin:8px auto;opacity:.3}
+.mnote{font-size:8px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:.1em}
+#toast{position:fixed;top:16px;right:16px;z-index:9999;padding:11px 18px;border-radius:14px;color:#fff;display:none;align-items:center;gap:8px;font-weight:700;font-size:13px;box-shadow:0 7px 22px rgba(0,0,0,.2);max-width:320px}
+#toast.show{display:flex;animation:fadein .3s ease}
+#toast.ok{background:rgba(79,70,229,.95)}
+#toast.err{background:rgba(244,63,94,.95)}
+#toast.inf{background:rgba(15,23,42,.95)}
+.btn-reset{padding:7px 18px;border-radius:11px;font-size:11px;font-weight:900;border:none;cursor:pointer;background:#fff1f2;color:#f43f5e;font-family:inherit;transition:all .2s;letter-spacing:.04em;display:none}
+.btn-reset:hover{background:#f43f5e;color:#fff}
+.btn-reset.show{display:block}
+@media(max-width:600px){header{padding:9px 14px}main{padding:24px 14px 70px}.dbody{flex-direction:column;padding:18px}.dr{width:100%}.er2{grid-template-columns:1fr}.icard{padding:30px 16px;border-radius:32px}}
+</style>
+</head>
+<body>
+
+<div id="overlay">
+  <svg class="sp" width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="#818cf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+  <p>LOADING...</p>
+</div>
+
+<div id="intro" class="hide">
+  <div class="icard">
+    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#818cf8" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" style="display:block;margin:0 auto"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+    <h2>안녕하세요, 2026 세모지 여행사<br>진로여행 프로젝트 투자자님!</h2>
+    <div class="sub">충남외국어고등학교 3학년 학생들의 진로여행 프로젝트를 소개합니다.</div>
+    <div class="quote">"투자자님께는 <span class="qg">500만원</span>의 투자 자산이 주어집니다.<br>학생들이 계획한 여행 프로그램을 보시고<br><span class="qb">1명~최대 3명</span>의 학생에게 투자해주세요!<br>3명 안에서 투자 금액은 자유롭게 입력하시면 됩니다."</div>
+    <button class="btn-go" id="btnStart">여행 프로젝트 검토 및 투자 시작! <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+  </div>
+</div>
+
+<div id="app">
+  <header>
+    <div class="logo">
+      <div class="logo-ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21 4 19 4c-2 0-4 2-4 2l-.5.5L11.2 5.2A2 2 0 0 0 9.5 6L7 9l4.8 2.1L8.5 14.3l-1.8 1 2.7 2.7 1-1.8 3.2-3.3z"/></svg></div>
+      <div>
+        <h1>2026 세.모.지 여행지리</h1>
+        <div id="myStatus" style="font-size:11px;color:#64748b;margin-top:3px;font-weight:700;display:none">💰 잔액 <span id="statusRem" style="color:#4f46e5;font-weight:900"></span> | 👥 <span id="statusCnt" style="color:#4f46e5;font-weight:900"></span>명에게 투자 완료</div>
+      </div>
+    </div>
+    <div class="hdr-r">
+      <div style="display:flex;align-items:center;gap:8px">
+        <div class="tabs">
+          <button class="tab on" id="tabInv">투자자용</button>
+          <button class="tab" id="tabAdm">관리자용</button>
+        </div>
+        <button class="btn-reset" id="btnReset">🔄 전체 리셋</button>
+      </div>
+      <div class="bud">
+        <div><div class="bud-lbl">나의 투자 자산</div><div class="bud-num" id="budNum">₩5,000,000</div></div>
+        <div class="dots" id="dotsEl"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+      </div>
+    </div>
+  </header>
+  <main>
+    <div class="done-wrap" id="doneWrap">
+      <div class="done-banner">
+        <div><h3>🎉 투자에 참여해주셔서 감사합니다!</h3><p>여러분의 소중한 응원이 여행자들에게 전달되었습니다.<br>모든 꿈이 지도를 넘어 현실이 되는 순간을 함께 기대해 주세요!</p></div>
+        <div class="done-total"><div class="amt">₩5,000,000</div></div>
+      </div>
+    </div>
+    <div class="grid" id="grid"></div>
+  </main>
+</div>
+
+<div class="ov" id="admOv">
+  <div class="acard">
+    <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#4f46e5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:block;margin:0 auto"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+    <h3>관리자 로그인</h3>
+    <input type="password" class="pw" id="pwEl" placeholder="••••" maxlength="10">
+    <div class="arow"><button class="btn-no" id="btnAdmNo">닫기</button><button class="btn-yes" id="btnAdmYes">인증</button></div>
+  </div>
+</div>
+
+<div class="ov" id="detOv">
+  <div class="dcard">
+    <div class="dhero">
+      <div class="dph" id="dph"><svg width="90" height="90" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.6" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg><p>Vision Blank</p></div>
+      <img id="dimg" src="" alt="" style="display:none">
+      <label class="iovl" id="iovl" style="display:none">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+        <span>이미지 변경</span>
+        <input type="file" id="imgFile" accept="image/*" style="display:none">
+      </label>
+      <button class="xbtn" id="btnX">✕</button>
+    </div>
+    <div class="dbody">
+      <div class="dl">
+        <div class="trow">
+          <span class="tag">Dream Manifesto</span>
+          <button class="etgl ed" id="btnEd" style="display:none"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4z"/></svg> 정보 수정</button>
+          <button class="cecl" id="btnEdX" style="display:none"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+        </div>
+        <div id="vw">
+          <div class="dttl" id="dttl"></div>
+          <div class="arow2"><div class="aav"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div><div><div class="asub">여행자 명단</div><div class="anm" id="dnm"></div></div></div>
+          <div class="ddsc" id="ddsc"></div>
+        </div>
+        <div id="ed" style="display:none">
+          <div class="eform">
+            <div class="er2"><div class="fg"><label class="flbl">이름</label><input type="text" class="fi" id="enm"></div><div class="fg"><label class="flbl">여행 제목</label><input type="text" class="fi" id="ett"></div></div>
+            <div class="fg"><div style="display:flex;justify-content:space-between;align-items:center"><label class="flbl">여행 계획 / 소개</label><span class="ccnt" id="ccnt">0 / 500</span></div><textarea class="ft" id="eds" maxlength="500" rows="6"></textarea></div>
+          </div>
+        </div>
+      </div>
+      <div class="dr">
+        <div class="ipan" id="ipan">
+          <div class="ih"><div class="isub">Support the Vision</div><div class="it">응원의 투자금</div></div>
+          <div class="inw"><span class="cur">₩</span><input type="number" class="inn" id="inn" placeholder="0"></div>
+          <div class="qw" id="qw"></div>
+          <div class="iacts"><button class="bok dis" id="bok">투자 확정</button><button class="bccl" id="bccl">투자 취소</button></div>
+        </div>
+        <div class="mon" id="mon" style="display:none">
+          <div class="mlbl">Monitoring Dashboard</div>
+          <div class="mamt" id="mamt">₩0</div>
+          <div class="mdiv"></div>
+          <div class="mnote">기본 지원금 100만원 포함</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+const SUPABASE_URL = 'https://lususbuywvfbefxjpezc.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx1c3VzYnV5d3ZmYmVmeGpwZXpjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzMzIwODUsImV4cCI6MjA5MzkwODA4NX0.qMhkbVbp7IN2JLNukRdo7L4kypXksdROAD0WNEM9Lbg';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const BUDGET = 5000000, MAX_INV = 3, CMAX = 500, KEY = '2026';
+// ME: 브라우저에 고정된 고유 ID (도메인 변경 무관)
+const ME = (() => {
+  const KEY_UID = 'semoji_uid_v1';
+  let id = localStorage.getItem(KEY_UID);
+  if (!id) {
+    id = 'u_' + Date.now() + '_' + Math.random().toString(36).slice(2);
+    localStorage.setItem(KEY_UID, id);
+  }
+  return id;
+})();
+
+let adm = false, projs = [], myInvs = [], selP = null, isEd = false;
+
+const Q = id => document.getElementById(id);
+const fmt = n => '₩' + Number(n).toLocaleString();
+
+function showOverlay(w) {
+  Q('overlay').classList.toggle('hide', w !== 'load');
+  Q('intro').classList.toggle('hide', w !== 'intro');
+}
+showOverlay('load');
+
+let tTmr = null;
+function toast(msg, t = 'ok') {
+  if (tTmr) clearTimeout(tTmr);
+  const el = Q('toast'); el.textContent = msg; el.className = 'show ' + t; el.style.display = 'flex';
+  tTmr = setTimeout(() => { el.style.display = 'none'; }, 3500);
+}
+
+const getMyInvs = () => myInvs.filter(i => i.user_id === ME);
+const getSpent = () => getMyInvs().reduce((s, i) => s + Number(i.amount), 0);
+const getRem = () => BUDGET - getSpent();
+
+function refreshBudget() {
+  const invList = getMyInvs();
+  const rem = getRem();
+  Q('budNum').textContent = fmt(rem);
+  Q('budNum').classList.toggle('done', rem === 0);
+  Q('dotsEl').querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('on', i < invList.length));
+  Q('doneWrap').classList.toggle('show', getSpent() >= BUDGET && !adm);
+  // 왼쪽 상단 현황 업데이트
+  const statusEl = document.getElementById('myStatus');
+  if (statusEl) {
+    if (!adm && invList.length > 0) {
+      statusEl.style.display = 'block';
+      statusEl.innerHTML = '💰 잔액 <b style="color:#4f46e5">' + fmt(rem) + '</b> &nbsp;|&nbsp; 👥 <b style="color:#4f46e5">' + invList.length + '</b>명에게 투자 완료';
+    } else {
+      statusEl.style.display = 'none';
+    }
+  }
+}
+
+function renderCards() {
+  const g = Q('grid'); g.innerHTML = '';
+  projs.forEach((p, idx) => {
+    const myInv = myInvs.find(i => i.user_id === ME && i.slot_id === p.slot_id);
+    const c = document.createElement('div');
+    c.className = 'card' + (myInv ? ' inv' : '');
+    c.style.animationDelay = (idx * 30) + 'ms';
+
+    const imgH = p.image_url ? `<img src="${p.image_url}" alt="">` : `<svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#e2e8f0" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>`;
+    const badgeH = myInv ? `<div class="inv-badge"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>` : '';
+    const editH = adm ? `<button class="adm-edit" data-sid="${p.slot_id}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4z"/></svg></button>` : '';
+
+    let fundH = '';
+    if (adm) fundH = `<div class="fund fadm"><div class="fl">Total Fund Monitoring</div><div class="fv">${fmt(p.total_invested || 0)}</div></div>`;
+    else if (myInv) fundH = `<div class="fund fmy"><div><div class="my-l">나의 투자금</div><div class="my-a">${fmt(myInv.amount)}</div></div><button class="ccl-ic" data-sid="${p.slot_id}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></button></div>`;
+    else fundH = `<div class="fund fem"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg><p>Roadmap Explorer</p></div>`;
+
+    c.innerHTML = `<div class="cimg">${imgH}${badgeH}${editH}</div><div class="cbody"><div class="cmeta"><div class="cno">#${p.slot_id}</div><div class="cnm">${p.student_name}</div></div><div class="cttl">${p.project_title}</div><div class="cdsc">"${p.description}"</div><div class="cft">${fundH}<button class="btn-det ${myInv ? 'sec' : 'pri'}" data-sid="${p.slot_id}">상세보기 &amp; 투자 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button></div></div>`;
+    g.appendChild(c);
+  });
+
+  g.querySelectorAll('.btn-det').forEach(b => b.onclick = () => { const p = projs.find(x => x.slot_id === b.dataset.sid); if (p) openDet(p, false); });
+  g.querySelectorAll('.adm-edit').forEach(b => b.onclick = e => { e.stopPropagation(); const p = projs.find(x => x.slot_id === b.dataset.sid); if (p) openDet(p, true); });
+  g.querySelectorAll('.ccl-ic').forEach(b => b.onclick = () => doCancelInv(b.dataset.sid));
+}
+
+function openDet(p, editMode) {
+  selP = p; isEd = false;
+  if (p.image_url) { Q('dimg').src = p.image_url; Q('dimg').style.display = 'block'; Q('dph').style.display = 'none'; }
+  else { Q('dimg').style.display = 'none'; Q('dph').style.display = 'flex'; }
+  if (adm) { Q('iovl').style.display = 'flex'; Q('imgFile').onchange = e => doImgUpload(p.slot_id, e); }
+  else Q('iovl').style.display = 'none';
+  Q('btnEd').style.display = adm ? 'flex' : 'none';
+  fillView(p); setEdMode(editMode);
+  const myInv = myInvs.find(i => i.user_id === ME && i.slot_id === p.slot_id);
+  if (!adm) {
+    Q('ipan').style.display = 'flex'; Q('mon').style.display = 'none';
+    buildQ(); Q('inn').value = ''; updateOk();
+    Q('bccl').classList.toggle('show', !!myInv);
+  } else {
+    Q('ipan').style.display = 'none'; Q('mon').style.display = 'flex';
+    Q('mamt').textContent = fmt(p.total_invested || 0);
+  }
+  Q('detOv').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeDet() { Q('detOv').classList.remove('open'); document.body.style.overflow = ''; selP = null; isEd = false; }
+function fillView(p) { Q('dttl').textContent = p.project_title; Q('dnm').textContent = p.student_name; Q('ddsc').textContent = `"${p.description}"`; }
+function setEdMode(on) {
+  isEd = on; Q('vw').style.display = on ? 'none' : 'block'; Q('ed').style.display = on ? 'block' : 'none';
+  Q('btnEdX').style.display = on ? 'inline-flex' : 'none';
+  if (on) {
+    Q('enm').value = selP.student_name; Q('ett').value = selP.project_title; Q('eds').value = selP.description; updCC();
+    Q('btnEd').innerHTML = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> 저장하기`;
+    Q('btnEd').className = 'etgl sv';
+  } else {
+    Q('btnEd').innerHTML = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4z"/></svg> 정보 수정`;
+    Q('btnEd').className = 'etgl ed';
+  }
+}
+function updCC() { const l = Q('eds').value.length; Q('ccnt').textContent = `${l} / ${CMAX}`; Q('ccnt').classList.toggle('ov', l >= CMAX); }
+function buildQ() {
+  const rem = getRem(); Q('qw').innerHTML = '';
+  [100000, 500000, 1000000].forEach(v => {
+    const b = document.createElement('button'); b.className = 'qb';
+    b.textContent = `+${v / 10000}만`;
+    b.onclick = () => {
+      const cur = parseInt(Q('inn').value) || 0;
+      const next = Math.min(cur + v, rem);
+      Q('inn').value = next; updateOk();
+    };
+    Q('qw').appendChild(b);
+  });
+  const mx = document.createElement('button'); mx.className = 'qb mx'; mx.textContent = '최대 투자'; mx.onclick = () => { Q('inn').value = rem; updateOk(); }; Q('qw').appendChild(mx);
+}
+function updateOk() {
+  const v = parseInt(Q('inn').value);
+  const rem = getRem();
+  Q('bok').className = 'bok ' + (v && v > 0 && v <= rem && rem > 0 ? 'act' : 'dis');
+  if (v > rem) { Q('inn').style.borderColor = '#f43f5e'; } else { Q('inn').style.borderColor = ''; }
+}
+
+async function doInvest() {
+  const amount = parseInt(Q('inn').value);
+  if (!amount || amount <= 0) { toast('금액을 입력해주세요.', 'err'); return; }
+
+  try {
+    // 서버에서 내 최신 투자 내역 가져오기
+    const { data: freshInvs, error: e1 } = await sb.from('investments').select('*').eq('user_id', ME);
+    if (e1) throw e1;
+
+    const myList = freshInvs || [];
+    const freshSpent = myList.reduce((s, i) => s + Number(i.amount), 0);
+    const freshRem = BUDGET - freshSpent;
+
+    // 잔액 초과 체크
+    if (amount > freshRem) {
+      if (freshRem <= 0) {
+        toast('투자 가능한 잔액이 없습니다.', 'err');
+      } else {
+        toast('잔액 초과! 최대 ' + fmt(freshRem) + ' 까지 투자 가능합니다.', 'err');
+        Q('inn').value = freshRem;
+        updateOk();
+      }
+      return;
+    }
+
+    // 최대 투자 인원 체크
+    const myInv = myList.find(i => String(i.slot_id) === String(selP.slot_id));
+    if (myList.length >= MAX_INV && !myInv) {
+      toast('최대 3명까지만 투자 가능합니다.', 'err');
+      return;
+    }
+
+    // 투자 실행
+    if (myInv) {
+      await sb.from('investments').update({ amount: Number(myInv.amount) + amount }).eq('id', myInv.id);
+    } else {
+      await sb.from('investments').insert({ user_id: ME, slot_id: String(selP.slot_id), amount });
+    }
+
+    // 프로젝트 총 투자금 업데이트
+    const { data: proj } = await sb.from('projects').select('total_invested').eq('slot_id', selP.slot_id).single();
+    await sb.from('projects').update({ total_invested: Number(proj.total_invested || 0) + amount }).eq('slot_id', selP.slot_id);
+
+    await loadAll();
+    toast('투자가 완료되었습니다!', 'ok');
+    closeDet();
+  } catch (e) {
+    console.error('투자 오류:', e);
+    toast('투자 처리 중 오류가 발생했습니다.', 'err');
+  }
+}
+
+async function doCancelInv(sid) {
+  const myInv = myInvs.find(i => i.user_id === ME && i.slot_id === sid);
+  if (!myInv) return;
+  try {
+    const proj = projs.find(p => p.slot_id === sid);
+    await sb.from('investments').delete().eq('id', myInv.id);
+    await sb.from('projects').update({ total_invested: Math.max(0, (proj.total_invested || 0) - myInv.amount) }).eq('slot_id', sid);
+    await loadAll();
+    toast('투자가 철회되었습니다.', 'inf');
+  } catch (e) { console.error(e); toast('처리 중 오류 발생', 'err'); }
+}
+
+async function doImgUpload(sid, e) {
+  const file = e.target.files[0]; if (!file) return;
+  if (file.size > 800000) { toast('800KB 이하 이미지를 사용해주세요.', 'err'); return; }
+  const r = new FileReader();
+  r.onloadend = async () => {
+    try {
+      await sb.from('projects').update({ image_url: r.result }).eq('slot_id', sid);
+      Q('dimg').src = r.result; Q('dimg').style.display = 'block'; Q('dph').style.display = 'none';
+      await loadAll(); toast('이미지 업로드 완료', 'ok');
+    } catch (e) { console.error(e); toast('저장 실패', 'err'); }
+  }; r.readAsDataURL(file);
+}
+
+async function saveProfile() {
+  if (!adm || !selP) return;
+  const nm = Q('enm').value.trim(), tt = Q('ett').value.trim(), ds = Q('eds').value.trim();
+  if (!nm || !tt) { toast('이름과 제목을 입력해주세요.', 'err'); return; }
+  try {
+    await sb.from('projects').update({ student_name: nm, project_title: tt, description: ds }).eq('slot_id', selP.slot_id);
+    await loadAll();
+    selP = projs.find(p => p.slot_id === selP.slot_id);
+    fillView(selP); setEdMode(false); toast('저장되었습니다.', 'ok');
+  } catch (e) { console.error(e); toast('수정 실패', 'err'); }
+}
+
+function setAdm(on) {
+  adm = on;
+  Q('tabInv').className = 'tab' + (on ? '' : ' on');
+  Q('tabAdm').className = 'tab' + (on ? ' on adm' : '');
+  Q('btnReset').className = 'btn-reset' + (on ? ' show' : '');
+  renderCards(); refreshBudget();
+}
+
+async function doReset() {
+  if (!confirm('모든 투자 데이터를 초기화할까요? 이 작업은 되돌릴 수 없습니다.')) return;
+  try {
+    // 모든 투자 삭제
+    await sb.from('investments').delete().neq('id', 0);
+    // 모든 프로젝트 투자금 100만원으로 초기화
+    await sb.from('projects').update({ total_invested: 1000000 }).neq('slot_id', '');
+    await loadAll();
+    toast('전체 투자 데이터가 초기화되었습니다.', 'ok');
+  } catch (e) { console.error(e); toast('리셋 실패', 'err'); }
+}
+
+async function loadAll() {
+  const [{ data: p }, { data: i }] = await Promise.all([
+    sb.from('projects').select('*').order('id'),
+    sb.from('investments').select('*')
+  ]);
+  projs = p || [];
+  myInvs = i || [];
+  renderCards();
+  refreshBudget();
+}
+
+// 실시간 구독
+sb.channel('realtime').on('postgres_changes', { event: '*', schema: 'public' }, () => loadAll()).subscribe();
+
+async function init() {
+  try {
+    await loadAll();
+    showOverlay('intro');
+  } catch (e) {
+    console.error(e);
+    toast('데이터 로드 실패', 'err');
+    showOverlay('intro');
+  }
+}
+
+Q('btnStart').onclick = () => showOverlay('none');
+Q('tabInv').onclick = () => { if (adm) setAdm(false); };
+Q('tabAdm').onclick = () => { if (adm) setAdm(false); else Q('admOv').classList.add('open'); };
+Q('btnAdmNo').onclick = () => Q('admOv').classList.remove('open');
+Q('admOv').onclick = e => { if (e.target === Q('admOv')) Q('admOv').classList.remove('open'); };
+Q('pwEl').onkeydown = e => { if (e.key === 'Enter') chkAdm(); };
+Q('btnAdmYes').onclick = chkAdm;
+function chkAdm() { if (Q('pwEl').value === KEY) { Q('admOv').classList.remove('open'); Q('pwEl').value = ''; setAdm(true); toast('관리자 모드로 전환되었습니다.', 'ok'); } else toast('비밀번호가 올바르지 않습니다.', 'err'); }
+Q('btnReset').onclick = doReset;
+Q('btnX').onclick = closeDet;
+Q('detOv').onclick = e => { if (e.target === Q('detOv')) closeDet(); };
+Q('btnEd').onclick = () => { if (isEd) saveProfile(); else setEdMode(true); };
+Q('btnEdX').onclick = () => setEdMode(false);
+Q('eds').oninput = updCC;
+Q('inn').oninput = updateOk;
+Q('bok').onclick = () => { if (Q('bok').classList.contains('act')) doInvest(); };
+Q('bccl').onclick = () => { if (selP) { doCancelInv(selP.slot_id); closeDet(); } };
+
+init();
+</script>
+</body>
+</html>
