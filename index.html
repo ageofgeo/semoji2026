@@ -13,6 +13,8 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 @keyframes fadein{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 @keyframes pop{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
+@keyframes slideLeft{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:none}}
+@keyframes slideRight{from{opacity:0;transform:translateX(-40px)}to{opacity:1;transform:none}}
 
 #overlay{position:fixed;inset:0;z-index:999;background:#0f172a;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;transition:opacity .5s}
 #overlay.hide{opacity:0;pointer-events:none}
@@ -108,6 +110,17 @@ main{padding:36px 28px 80px;max-width:1540px;margin:0 auto}
 .iovl span{font-size:13px;font-weight:900;letter-spacing:.3em;text-transform:uppercase;text-decoration:underline;text-underline-offset:4px}
 .xbtn{position:absolute;top:13px;right:13px;background:rgba(255,255,255,.15);border:none;color:#fff;width:50px;height:50px;border-radius:50%;font-size:19px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s}
 .xbtn:hover{background:rgba(255,255,255,.28)}
+
+/* ── 이전/다음 네비게이션 버튼 ── */
+.nav-prev,.nav-next{position:absolute;top:50%;transform:translateY(-50%);z-index:10;background:rgba(255,255,255,.18);border:2px solid rgba(255,255,255,.3);backdrop-filter:blur(8px);color:#fff;width:48px;height:48px;border-radius:50%;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
+.nav-prev{left:14px}
+.nav-next{right:70px}
+.nav-prev:hover,.nav-next:hover{background:rgba(255,255,255,.35);transform:translateY(-50%) scale(1.08)}
+.nav-prev:disabled,.nav-next:disabled{opacity:.25;cursor:default;pointer-events:none}
+.nav-counter{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);background:rgba(15,23,42,.55);backdrop-filter:blur(6px);color:#fff;font-size:11px;font-weight:900;letter-spacing:.15em;padding:5px 14px;border-radius:50px;pointer-events:none}
+.det-anim-left{animation:slideLeft .28s ease both}
+.det-anim-right{animation:slideRight .28s ease both}
+
 .dbody{padding:32px;display:flex;flex-wrap:wrap;gap:32px;overflow-y:auto}
 .dl{flex:1;min-width:240px}
 .dr{width:300px;flex-shrink:0;display:flex;flex-direction:column}
@@ -163,7 +176,7 @@ main{padding:36px 28px 80px;max-width:1540px;margin:0 auto}
 #toast.err{background:rgba(244,63,94,.95)}
 #toast.inf{background:rgba(15,23,42,.95)}
 #myStatus{font-size:11px;color:#64748b;margin-top:3px;font-weight:700;display:none}
-@media(max-width:600px){header{padding:9px 14px}main{padding:24px 14px 70px}.dbody{flex-direction:column;padding:18px}.dr{width:100%}.er2{grid-template-columns:1fr}.icard{padding:30px 16px;border-radius:32px}}
+@media(max-width:600px){header{padding:9px 14px}main{padding:24px 14px 70px}.dbody{flex-direction:column;padding:18px}.dr{width:100%}.er2{grid-template-columns:1fr}.icard{padding:30px 16px;border-radius:32px}.nav-prev{left:8px}.nav-next{right:64px}}
 </style>
 </head>
 <body>
@@ -236,9 +249,13 @@ main{padding:36px 28px 80px;max-width:1540px;margin:0 auto}
         <span>이미지 변경</span>
         <input type="file" id="imgFile" accept="image/*" style="display:none">
       </label>
+      <!-- 이전/다음 네비게이션 버튼 -->
+      <button class="nav-prev" id="navPrev" title="이전 여행자">&#8592;</button>
+      <button class="nav-next" id="navNext" title="다음 여행자">&#8594;</button>
+      <div class="nav-counter" id="navCounter">1 / 10</div>
       <button class="xbtn" id="btnX">✕</button>
     </div>
-    <div class="dbody">
+    <div class="dbody" id="dBody">
       <div class="dl">
         <div class="trow">
           <span class="tag">Dream Manifesto</span>
@@ -358,6 +375,55 @@ function renderCards() {
   g.querySelectorAll('.ccl-ic').forEach(b => b.onclick = () => doCancelInv(b.dataset.pid));
 }
 
+// ── 네비게이션 핵심 함수 ──
+function updateNavButtons() {
+  if (!selP || !projs.length) return;
+  const idx = projs.findIndex(p => p.id === selP.id);
+  Q('navPrev').disabled = idx <= 0;
+  Q('navNext').disabled = idx >= projs.length - 1;
+  Q('navCounter').textContent = `${idx + 1} / ${projs.length}`;
+}
+
+function navTo(dir) {
+  if (!selP || !projs.length) return;
+  const idx = projs.findIndex(p => p.id === selP.id);
+  const nextIdx = idx + dir;
+  if (nextIdx < 0 || nextIdx >= projs.length) return;
+  const nextP = projs[nextIdx];
+
+  // 슬라이드 애니메이션
+  const body = Q('dBody');
+  body.classList.remove('det-anim-left', 'det-anim-right');
+  void body.offsetWidth; // reflow
+  body.classList.add(dir > 0 ? 'det-anim-left' : 'det-anim-right');
+
+  // 이미지 교체
+  if (nextP.imageUrl) {
+    Q('dimg').src = nextP.imageUrl;
+    Q('dimg').style.display = 'block';
+    Q('dph').style.display = 'none';
+  } else {
+    Q('dimg').style.display = 'none';
+    Q('dph').style.display = 'flex';
+  }
+
+  selP = nextP;
+  isEd = false;
+  fillView(nextP);
+  setEdMode(false);
+  updateNavButtons();
+
+  const myInv = myInvs.find(i => i.uid === me?.uid && i.pid === nextP.id);
+  if (!adm) {
+    Q('ipan').style.display = 'flex'; Q('mon').style.display = 'none';
+    buildQ(); Q('inn').value = ''; updateOk();
+    Q('bccl').classList.toggle('show', !!myInv);
+  } else {
+    Q('ipan').style.display = 'none'; Q('mon').style.display = 'flex';
+    Q('mamt').textContent = fmt(nextP.totalInvested || 0);
+  }
+}
+
 function openDet(p, editMode) {
   selP = p; isEd = false;
   if (p.imageUrl) { Q('dimg').src = p.imageUrl; Q('dimg').style.display = 'block'; Q('dph').style.display = 'none'; }
@@ -366,6 +432,7 @@ function openDet(p, editMode) {
   else Q('iovl').style.display = 'none';
   Q('btnEd').style.display = adm ? 'flex' : 'none';
   fillView(p); setEdMode(editMode);
+  updateNavButtons();
   const myInv = myInvs.find(i => i.uid === me?.uid && i.pid === p.id);
   if (!adm) {
     Q('ipan').style.display = 'flex'; Q('mon').style.display = 'none';
@@ -409,36 +476,24 @@ function updateOk() { const v = parseInt(Q('inn').value); Q('bok').className = '
 async function doInvest() {
   const amount = parseInt(Q('inn').value);
   if (!amount || amount <= 0) { toast('금액을 입력해주세요.', 'err'); return; }
-
   try {
     await runTransaction(db, async tx => {
-      // 현재 내 투자 내역 확인
       const invCol = collection(db, 'artifacts', AID, 'users', me.uid, 'investments');
       const myInvSnap = await getDocs(invCol);
       const myInvList = myInvSnap.docs.map(d => ({ id: d.id, ...d.data() }));
       const freshSpent = myInvList.reduce((s, i) => s + Number(i.amount), 0);
       const freshRem = BUDGET - freshSpent;
-
-      if (amount > freshRem) {
-        throw new Error('잔액 초과! 최대 ' + fmt(freshRem) + ' 까지 투자 가능합니다.');
-      }
-
+      if (amount > freshRem) throw new Error('잔액 초과! 최대 ' + fmt(freshRem) + ' 까지 투자 가능합니다.');
       const existing = myInvList.find(i => i.id === selP.id);
-      if (myInvList.length >= MAX_INV && !existing) {
-        throw new Error('최대 3명까지만 투자 가능합니다.');
-      }
-
+      if (myInvList.length >= MAX_INV && !existing) throw new Error('최대 3명까지만 투자 가능합니다.');
       const iRef = doc(db, 'artifacts', AID, 'users', me.uid, 'investments', selP.id);
       const pRef = doc(db, 'artifacts', AID, 'public', 'data', 'projects', selP.id);
       const pSnap = await tx.get(pRef);
-
       tx.set(iRef, { amount: (existing ? Number(existing.amount) : 0) + amount, updatedAt: Date.now() }, { merge: true });
       tx.update(pRef, { totalInvested: (pSnap.data().totalInvested || 0) + amount });
     });
     toast('투자가 완료되었습니다!', 'ok'); closeDet();
-  } catch (e) {
-    toast(e.message || '투자 처리 중 오류가 발생했습니다.', 'err');
-  }
+  } catch (e) { toast(e.message || '투자 처리 중 오류가 발생했습니다.', 'err'); }
 }
 
 async function doCancelInv(pid) {
@@ -491,7 +546,6 @@ function setAdm(on) {
 async function doReset() {
   if (!confirm('모든 투자 데이터를 초기화할까요?')) return;
   try {
-    // 모든 프로젝트 총투자금 100만원으로 초기화
     const projCol = collection(db, 'artifacts', AID, 'public', 'data', 'projects');
     const projSnap = await getDocs(projCol);
     const batch = [];
@@ -508,7 +562,7 @@ function subscribe(user) {
     if (snap.empty && !initing) {
       initing = true;
       try {
-        for (let i = 1; i <= 11; i++) {
+        for (let i = 1; i <= 10; i++) {
           await setDoc(doc(db, 'artifacts', AID, 'public', 'data', 'projects', String(i)), {
             studentName: `여행자 ${i}`, projectTitle: `나의 꿈 진로 여행 계획 ${i}`,
             description: '미래의 꿈을 찾아 떠나는 특별한 여행 계획입니다.',
@@ -531,9 +585,9 @@ function subscribe(user) {
   }, err => console.error(err));
 }
 
+// ── 이벤트 바인딩 ──
 Q('btnStart').onclick = () => {
   showOverlay('none');
-  // 데이터가 아직 없으면 강제로 렌더링
   if (projs.length === 0) {
     const g = Q('grid');
     g.innerHTML = '<div style="text-align:center;padding:60px;color:#94a3b8;font-size:14px">데이터를 불러오는 중입니다...<br>잠시 후 자동으로 나타납니다.</div>';
@@ -555,6 +609,18 @@ Q('inn').oninput = updateOk;
 Q('bok').onclick = () => { if (Q('bok').classList.contains('act')) doInvest(); };
 Q('bccl').onclick = () => { if (selP) { doCancelInv(selP.id); closeDet(); } };
 Q('btnReset').onclick = doReset;
+
+// 이전/다음 버튼
+Q('navPrev').onclick = e => { e.stopPropagation(); navTo(-1); };
+Q('navNext').onclick = e => { e.stopPropagation(); navTo(1); };
+
+// 키보드 방향키 지원
+document.addEventListener('keydown', e => {
+  if (!Q('detOv').classList.contains('open')) return;
+  if (e.key === 'ArrowLeft') navTo(-1);
+  if (e.key === 'ArrowRight') navTo(1);
+  if (e.key === 'Escape') closeDet();
+});
 
 onAuthStateChanged(auth, user => {
   if (user && !subDone) { subDone = true; me = user; subscribe(user); }
