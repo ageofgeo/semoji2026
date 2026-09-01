@@ -1,0 +1,2352 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>9월 18일 학부모 공개수업 일정</title>
+<style>
+  :root{
+    --ink:#5a3b42;
+    --paper:#fff5f7;
+    --line:#f3d3dc;
+    --accent:#e8899f;
+    --accent-soft:#fce6ec;
+    --amber:#d9738e;
+    --amber-soft:#fbe0e8;
+    --edit:#c65b78;
+    --edit-soft:#fbdde6;
+    --white:#ffffff;
+    --muted:#b98a95;
+    --grade-band:#fdeef2;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+    padding:32px 20px 60px;
+  }
+  .wrap{max-width:1120px;margin:0 auto;}
+
+  header{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    border-bottom:2px solid var(--ink);
+    padding-bottom:14px;
+    margin-bottom:28px;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+  header .title{
+    font-size:26px;
+    font-weight:800;
+    letter-spacing:-0.5px;
+  }
+  header .title span{color:var(--accent);}
+  header .sub{
+    font-size:13px;
+    color:var(--muted);
+  }
+  .date-badge{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    background:var(--amber-soft);
+    color:var(--amber);
+    font-weight:800;
+    font-size:13px;
+    padding:6px 14px;
+    border-radius:20px;
+  }
+
+  .panel{
+    background:var(--white);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:22px;
+    margin-bottom:26px;
+    transition:box-shadow .2s;
+  }
+  .panel.editing{
+    border-color:var(--edit);
+    box-shadow:0 0 0 3px var(--edit-soft);
+  }
+  .panel h2{
+    font-size:15px;
+    margin:0 0 16px;
+    font-weight:700;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .panel h2::before{
+    content:"";
+    width:6px;height:6px;
+    background:var(--accent);
+    border-radius:50%;
+    display:inline-block;
+  }
+  .panel.editing h2::before{background:var(--edit);}
+  .edit-flag{
+    font-size:11.5px;
+    font-weight:800;
+    color:var(--edit);
+    background:var(--edit-soft);
+    padding:3px 9px;
+    border-radius:20px;
+    margin-left:2px;
+  }
+
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:14px 16px;
+  }
+  @media (max-width:760px){
+    .grid{grid-template-columns:repeat(2,1fr);}
+  }
+  .plan-grid{
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:14px 16px;
+  }
+  @media (max-width:760px){
+    .plan-grid{grid-template-columns:1fr;}
+  }
+  .plan-grid .full{grid-column:1 / -1;}
+  .field{display:flex;flex-direction:column;gap:6px;}
+  .field label{
+    font-size:12px;
+    font-weight:600;
+    color:var(--muted);
+  }
+  .field input, .field select, .field textarea{
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:9px 10px;
+    font-size:14px;
+    font-family:inherit;
+    background:#fffdf9;
+    color:var(--ink);
+  }
+  .field textarea{resize:vertical;line-height:1.5;}
+  .field input::placeholder,
+  .field textarea::placeholder{
+    color:var(--muted);
+    opacity:.7;
+    font-style:italic;
+    font-weight:400;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus{
+    outline:none;
+    border-color:var(--accent);
+    box-shadow:0 0 0 3px var(--accent-soft);
+  }
+  .field.manual-entry > label{font-weight:900;color:var(--ink);}
+  .field input:disabled,.field select:disabled{background:#edf2f5;color:#71818c;border-color:#d7e0e6;cursor:not-allowed;font-weight:700;}
+  .field select{cursor:pointer;}
+  .subfield-row{display:flex;gap:8px;}
+  .subfield-row select{flex:1;}
+
+  .period-toggle{
+    display:flex;
+    gap:8px;
+  }
+  .period-toggle button{
+    flex:1;
+    padding:9px 0;
+    border:1px solid var(--line);
+    border-radius:6px;
+    background:#fffdf9;
+    color:var(--muted);
+    font-weight:700;
+    font-size:14px;
+  }
+  .period-toggle button.active{
+    background:var(--accent);
+    border-color:var(--accent);
+    color:#fff;
+  }
+
+  .actions{
+    margin-top:18px;
+    display:flex;
+    justify-content:flex-end;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+  button{
+    font-family:inherit;
+    cursor:pointer;
+    border:none;
+    border-radius:6px;
+    font-weight:700;
+    font-size:14px;
+  }
+  .btn-primary{
+    background:var(--accent);
+    color:#fff;
+    padding:10px 22px;
+  }
+  .btn-primary:hover{background:#c96b83;}
+  .btn-primary.is-editing{background:var(--edit);}
+  .btn-primary.is-editing:hover{background:#a5495f;}
+  .btn-ghost{
+    background:transparent;
+    color:var(--muted);
+    border:1px solid var(--line);
+    padding:10px 16px;
+  }
+  .btn-ghost:hover{border-color:var(--ink);color:var(--ink);}
+  .btn-small{padding:6px 12px;font-size:12.5px;border-radius:6px;}
+
+  table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:13.5px;
+  }
+  thead th{
+    text-align:left;
+    font-size:12px;
+    color:var(--muted);
+    font-weight:700;
+    padding:10px 10px;
+    border-bottom:2px solid var(--ink);
+    white-space:nowrap;
+  }
+  tbody td{
+    padding:12px 10px;
+    border-bottom:1px solid var(--line);
+    vertical-align:middle;
+  }
+  tbody tr:hover{background:#fbf9f3;}
+  tbody tr.row-editing{background:var(--edit-soft);}
+  .order-badge{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:24px;height:24px;
+    border-radius:50%;
+    background:var(--accent-soft);
+    color:var(--accent);
+    font-weight:800;
+    font-size:12px;
+  }
+  .grade-class-cell{font-weight:700;white-space:nowrap;}
+  .period-tag{
+    display:inline-block;
+    padding:3px 9px;
+    border-radius:5px;
+    background:var(--amber-soft);
+    color:var(--amber);
+    font-size:11.5px;
+    font-weight:800;
+  }
+  .row-btns{display:flex;gap:4px;white-space:nowrap;flex-wrap:wrap;}
+  .icon-btn{
+    background:none;
+    border:none;
+    color:var(--muted);
+    font-size:14px;
+    padding:5px 8px;
+    border-radius:5px;
+  }
+  .icon-btn:hover{background:var(--accent-soft);color:var(--accent);}
+  .icon-btn.del:hover{background:#fbe6e4;color:#c0392b;}
+  .empty{
+    text-align:center;
+    color:var(--muted);
+    padding:40px 0;
+    font-size:14px;
+  }
+  .count{
+    font-size:12px;
+    color:var(--muted);
+    font-weight:600;
+    margin-left:6px;
+  }
+  .grade-header td{
+    background:var(--grade-band);
+    padding:9px 10px;
+    border-bottom:1px solid var(--line);
+  }
+  .grade-header-inner{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-weight:800;
+    font-size:13px;
+    color:var(--edit);
+  }
+  .grade-header-inner .dot{
+    width:8px;height:8px;
+    border-radius:50%;
+    background:var(--edit);
+    display:inline-block;
+  }
+  .grade-header-inner .n{
+    font-weight:600;
+    font-size:11.5px;
+    color:var(--muted);
+  }
+
+  .admin-btn{
+    background:var(--white);
+    border:1px solid var(--line);
+    color:var(--muted);
+    padding:7px 14px;
+    border-radius:20px;
+    font-size:12.5px;
+    font-weight:700;
+  }
+  .admin-btn:hover{border-color:var(--edit); color:var(--edit);}
+  .admin-btn.is-admin{
+    background:var(--edit);
+    border-color:var(--edit);
+    color:#fff;
+  }
+
+  .sync-badge{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    font-size:12px;
+    font-weight:700;
+    color:#3a8a52;
+    background:#e8f7ec;
+    padding:6px 12px;
+    border-radius:20px;
+  }
+  .sync-badge.offline{
+    color:var(--muted);
+    background:var(--accent-soft);
+  }
+  .sync-note{
+    text-align:right;
+    font-size:11.5px;
+    color:var(--muted);
+    margin:-14px 0 18px;
+  }
+
+  .deadline-banner{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:12px 18px;
+    border-radius:10px;
+    font-size:13.5px;
+    font-weight:700;
+    margin-bottom:22px;
+  }
+  .deadline-banner.open{
+    background:var(--accent-soft);
+    color:#a03a5b;
+    border:1px solid var(--line);
+  }
+  .deadline-banner.closed{
+    background:#fbdde6;
+    color:var(--edit);
+    border:1px solid var(--edit);
+  }
+  .deadline-banner .badge{
+    font-size:11px;
+    font-weight:800;
+    padding:3px 10px;
+    border-radius:20px;
+    background:var(--white);
+  }
+
+  .locked-note{
+    font-size:12px;
+    color:var(--edit);
+    font-weight:700;
+    margin-top:10px;
+    text-align:right;
+  }
+
+  .tabs{
+    display:flex;
+    gap:6px;
+    margin-bottom:22px;
+    border-bottom:1px solid var(--line);
+  }
+  .tab-btn{
+    background:none;
+    border:none;
+    padding:10px 18px;
+    font-size:14px;
+    font-weight:700;
+    color:var(--muted);
+    border-bottom:3px solid transparent;
+    margin-bottom:-1px;
+  }
+  .tab-btn:hover{color:var(--edit);}
+  .tab-btn.active{
+    color:var(--edit);
+    border-bottom-color:var(--edit);
+  }
+  .tab-content{display:none;}
+  .tab-content.active{display:block;}
+
+  .status-badge{
+    font-size:11px;
+    font-weight:800;
+    padding:3px 9px;
+    border-radius:20px;
+    white-space:nowrap;
+    display:inline-block;
+  }
+  .status-badge.done{background:#e8f7ec;color:#3a8a52;}
+  .status-badge.todo{background:var(--accent-soft);color:var(--edit);}
+
+  .plan-updated-at{
+    font-size:11px;
+    color:var(--muted);
+    margin-top:3px;
+    white-space:nowrap;
+  }
+  .grade-pdf-bar{display:flex;gap:6px;flex-wrap:wrap;align-items:center;}
+  .unlinked-panel{background:#fff8e9;border-color:#f0d9a0;margin-top:14px;}
+  .unlinked-panel h2::before{background:#d99a2b;}
+  .unlinked-note{font-size:12px;color:#8a6a1f;margin:-6px 0 12px;}
+  .unlinked-toggle-header{cursor:pointer;user-select:none;}
+  .unlinked-toggle-header:hover{color:#a3781a;}
+  .unlinked-toggle-icon{
+    display:inline-block;
+    width:12px;
+    font-size:11px;
+    color:#a3781a;
+    transition:transform .15s;
+  }
+  .unlinked-body{margin-top:4px;}
+
+  .checkbox-group{display:flex;flex-wrap:wrap;gap:8px;}
+  .chip{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    padding:7px 13px;
+    border:1px solid var(--line);
+    border-radius:20px;
+    font-size:12.5px;
+    font-weight:600;
+    cursor:pointer;
+    user-select:none;
+    background:#fffdf9;
+    color:var(--muted);
+  }
+  .chip input{margin:0;accent-color:var(--edit);}
+  .chip.checked{
+    background:var(--accent-soft);
+    border-color:var(--accent);
+    color:var(--edit);
+    font-weight:800;
+  }
+
+  .plan-teacher-group{margin-bottom:24px;}
+  .plan-teacher-group:last-child{margin-bottom:0;}
+  .plan-teacher-header{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-weight:800;
+    font-size:14px;
+    color:var(--edit);
+    margin-bottom:10px;
+    padding-bottom:6px;
+    border-bottom:1px solid var(--line);
+  }
+  .plan-teacher-header .n{
+    font-size:11.5px;
+    font-weight:600;
+    color:var(--muted);
+  }
+  .plan-card{
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:14px 16px;
+    margin-bottom:10px;
+    background:#fffdfd;
+  }
+  .plan-card-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+  .plan-card-title{font-weight:700;font-size:14px;}
+  .plan-card-meta{font-size:12px;color:var(--muted);margin-top:3px;}
+  .plan-card-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;}
+
+  .template-choice-group{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+  .template-choice-btn{
+    flex:1;
+    min-width:220px;
+    text-align:left;
+    background:#fffdf9;
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:12px 14px;
+    cursor:pointer;
+    font-family:inherit;
+  }
+  .template-choice-btn:hover{border-color:var(--accent);}
+  .template-choice-btn.active{
+    border-color:var(--edit);
+    background:var(--edit-soft);
+    box-shadow:0 0 0 2px var(--edit-soft) inset;
+  }
+  .template-choice-btn.locked{
+    cursor:not-allowed;
+    opacity:.55;
+  }
+  .tc-title{font-weight:800;font-size:13.5px;color:var(--ink);}
+  .template-choice-btn.active .tc-title{color:var(--edit);}
+  .tc-desc{font-size:11.5px;color:var(--muted);margin-top:3px;line-height:1.4;}
+  .template-lock-note{
+    font-size:11.5px;
+    color:var(--muted);
+    margin-top:6px;
+  }
+  .cat-row{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:8px;
+  }
+  @media (max-width:760px){
+    .cat-row{grid-template-columns:1fr;}
+  }
+  .cat-row .subfield label{
+    font-size:11px;
+    font-weight:600;
+    color:var(--muted);
+    display:block;
+    margin-bottom:4px;
+  }
+  .cat-row .subfield textarea{width:100%;}
+
+  .field-disabled{opacity:.4;}
+  .field-disabled input,
+  .field-disabled select,
+  .field-disabled textarea{
+    background:#f1ecee;
+    cursor:not-allowed;
+  }
+  .field-disabled .checkbox-group .chip{
+    cursor:not-allowed;
+  }
+
+  .load-entry-box{
+    max-width:460px;
+    margin-bottom:18px;
+  }
+  .preview-modal{position:fixed;inset:0;z-index:9999;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(55,38,43,.58);}
+  .preview-modal.open{display:flex;}
+  .preview-dialog{display:flex;flex-direction:column;width:min(980px,96vw);height:94vh;overflow:hidden;border-radius:12px;background:#f3f8fc;box-shadow:0 18px 55px rgba(0,0,0,.28);}
+  .preview-toolbar{display:flex;align-items:center;gap:8px;padding:10px 14px;background:#fff;border-bottom:1px solid #c9dfed;}
+  .preview-toolbar strong{color:#244b66;margin-right:auto;}
+  .preview-toolbar button{padding:8px 14px;}
+  .preview-frame{width:100%;height:100%;border:0;background:#dfe8ee;}
+  .print-area{display:none;}
+  @media print{
+    @page{size:A4 portrait;margin:0;}
+    body{margin:0!important;padding:0!important;background:#fff!important;}
+    body.printing-plan .wrap,body.printing-plan .preview-modal{display:none!important;}
+    body.printing-plan .print-area{display:block!important;width:210mm;min-height:297mm;margin:0 auto;padding:12mm;color:#1f2937;font-family:'Malgun Gothic','Apple SD Gothic Neo',sans-serif;}
+    body.printing-plan .print-area.combined-print{padding:0;}
+    .print-area h1{text-align:center;font-size:20px;margin:0 0 28px;}
+    .print-area table{width:100%;border-collapse:collapse;margin-bottom:18px;background:#fff;border:2px solid #7fb3d5;}
+    .print-area tr{break-inside:avoid;page-break-inside:avoid;}
+    .print-area th,.print-area td{border:1px solid #9fc7e3;padding:9px 12px;font-size:13.5px;text-align:left;vertical-align:top;}
+    .print-area th{width:130px;background:#dceffc!important;color:#244b66;font-weight:700;white-space:nowrap;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+    .print-area .wide{white-space:pre-wrap;}
+    .print-area .section-title{margin:22px 0 8px;padding:8px 12px;border-left:4px solid #5b9cc6;background:#dceffc!important;color:#244b66;font-size:14px;font-weight:800;break-inside:avoid;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+    .print-area .example-guide{color:#b7bfc7;font-size:11px;line-height:1.65;font-style:italic;}
+    .print-area .flow-box{min-height:45mm;border:2px solid #7fb3d5;padding:12px;font-size:13.5px;line-height:1.65;white-space:pre-wrap;break-inside:auto;page-break-inside:auto;}
+    .print-area .combined-plan-page{width:210mm;min-height:297mm;padding:12mm;break-after:page;page-break-after:always;}
+    .print-area .combined-plan-page:last-child{break-after:auto;page-break-after:auto;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div>
+      <div class="title">학부모 공개수업 <span>일정관리</span></div>
+      <div class="sub">학년별로 구분되어 표시되며, 학년 · 학급 순서대로 자동 정렬됩니다 · 9월 14일(월) 16:30까지 입력 및 수정 가능</div>
+    </div>
+    <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+      <div class="date-badge">📅 2026년 9월 18일</div>
+      <div class="sync-badge" id="sync-badge">🟢 실시간 공유 중</div>
+      <button class="admin-btn" id="excel-export" title="입력한 모든 데이터를 Excel 파일로 정리">📊 엑셀로 정리</button>
+      <button class="admin-btn" id="admin-toggle">🔒 관리자 모드</button>
+    </div>
+  </header>
+
+  <div class="tabs">
+    <button class="tab-btn active" id="tab-btn-register" data-tab="register">📋 일정 등록</button>
+    <button class="tab-btn" id="tab-btn-plans" data-tab="plans">📝 교수학습과정안 작성</button>
+  </div>
+
+  <div id="tab-register" class="tab-content active">
+
+  <div class="deadline-banner" id="deadline-banner"></div>
+  <div class="sync-note" id="sync-note">마지막 동기화: -</div>
+
+  <div class="panel" id="form-panel">
+    <h2 id="form-title">수업공개 일정 등록</h2>
+    <div style="font-size:12px; color:var(--muted); margin:-8px 0 16px;">* 모든 항목을 빠짐없이 입력해야 등록됩니다. 교수학습과정안은 옆 탭에서 화면으로 직접 작성합니다.</div>
+    <div class="grid">
+      <div class="field">
+        <label>교사명</label>
+        <input type="text" id="f-teacher" placeholder="교사명 입력">
+      </div>
+      <div class="field">
+        <label>수업학년</label>
+        <select id="f-grade">
+          <option value="">선택</option>
+          <option value="1">1학년</option>
+          <option value="2">2학년</option>
+          <option value="3">3학년</option>
+          <option value="IB">IB과정</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>학급</label>
+        <select id="f-class">
+          <option value="">선택</option>
+          <option value="1">1반</option>
+          <option value="2">2반</option>
+          <option value="3">3반</option>
+          <option value="4">4반</option>
+          <option value="5">5반</option>
+          <option value="6">6반</option>
+          <option value="7">7반</option>
+          <option value="IB">IB과정</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>교과명</label>
+        <select id="f-subject"></select>
+      </div>
+      <div class="field" id="f-subject-other-wrap" style="display:none;">
+        <label>교과명 (직접 입력)</label>
+        <input type="text" id="f-subject-other" placeholder="편제표에 없는 과목명 입력">
+      </div>
+      <div class="field" style="grid-column: span 2;">
+        <label>수업주제</label>
+        <input type="text" id="f-topic" placeholder="수업주제 입력">
+      </div>
+      <div class="field">
+        <label>수업방법</label>
+        <input type="text" id="f-method" placeholder="예) 모둠 협력학습">
+      </div>
+      <div class="field">
+        <label>교시</label>
+        <div class="period-toggle">
+          <button type="button" id="btn-5" data-period="5교시" class="active">5교시</button>
+          <button type="button" id="btn-6" data-period="6교시">6교시</button>
+        </div>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="btn-ghost" id="cancel-edit" style="display:none;">편집 취소</button>
+      <button class="btn-ghost" id="clear-form">입력 지우기</button>
+      <button class="btn-primary" id="add-row">일정 추가</button>
+    </div>
+    <div class="locked-note" id="locked-note" style="display:none;">🔒 수정 마감으로 등록/수정/삭제가 제한되어 있습니다. 관리자만 계속 수정할 수 있습니다.</div>
+  </div>
+
+  <div class="panel">
+    <h2>공개수업 일정표<span class="count" id="row-count"></span><button class="icon-btn" id="manual-refresh" title="새로고침" style="margin-left:auto;">⟳ 새로고침</button></h2>
+    <div style="overflow-x:auto;">
+      <table>
+        <thead>
+          <tr>
+            <th>순서</th>
+            <th>학년</th>
+            <th>학급</th>
+            <th>교시</th>
+            <th>교사명</th>
+            <th>교과명</th>
+            <th>수업주제</th>
+            <th>수업방법</th>
+            <th>교수학습과정안</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="table-body"></tbody>
+      </table>
+      <div class="empty" id="empty-msg">아직 등록된 일정이 없습니다. 위 양식으로 첫 일정을 추가해 보세요.</div>
+    </div>
+  </div>
+
+  </div><!-- /#tab-register -->
+
+  <div id="tab-plans" class="tab-content">
+
+    <div class="panel" id="plan-form-panel">
+      <h2 id="plan-form-title">교수학습과정안 작성</h2>
+      <div style="font-size:12px; color:var(--muted); margin:-8px 0 16px;">
+        등록된 수업정보를 불러오면 교사명 · 학년반 · 과목 · 수업주제가 자동으로 입력됩니다. 직접 입력도 가능합니다.
+      </div>
+
+      <div class="field load-entry-box" style="max-width:640px;">
+        <label>① 작성할 양식 선택 <span style="color:var(--edit);">*</span></label>
+        <div class="template-choice-group" id="template-choice">
+          <button type="button" class="template-choice-btn active" data-template="basic">
+            <div class="tc-title">교수학습 과정안 (기본)</div>
+            <div class="tc-desc">일반적인 공개수업에서 사용하는 기본 양식입니다.</div>
+          </button>
+          <button type="button" class="template-choice-btn" data-template="concept">
+            <div class="tc-title">개념 기반 학습 과정안</div>
+            <div class="tc-desc">개념 기반 학습(IB형 수업 설계 등)을 적용한 수업에서 사용하는 양식입니다.</div>
+          </button>
+        </div>
+        <div class="template-lock-note" id="template-lock-note" style="display:none;">🔒 이미 저장된 과정안은 양식을 바꿀 수 없습니다. 다른 양식으로 작성하려면 새로 작성해 주세요.</div>
+      </div>
+
+      <div class="field load-entry-box">
+        <label>② 등록된 수업정보 불러오기</label>
+        <select id="plan-load-entry">
+          <option value="">직접 입력</option>
+        </select>
+      </div>
+
+      <div class="plan-grid">
+        <div class="field">
+          <label id="p-teacher-label">교사명</label>
+          <input type="text" id="p-teacher" placeholder="교사명 입력">
+        </div>
+        <div class="field">
+          <label id="p-gradeclass-label">수업 학년반</label>
+          <div class="subfield-row">
+            <select id="p-grade">
+              <option value="">학년</option>
+              <option value="1">1학년</option>
+              <option value="2">2학년</option>
+              <option value="3">3학년</option>
+              <option value="IB">IB과정</option>
+            </select>
+            <select id="p-class">
+              <option value="">반</option>
+              <option value="1">1반</option>
+              <option value="2">2반</option>
+              <option value="3">3반</option>
+              <option value="4">4반</option>
+              <option value="5">5반</option>
+              <option value="6">6반</option>
+              <option value="7">7반</option>
+              <option value="IB">IB과정</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label>과목명</label>
+          <select id="p-subject"></select>
+        </div>
+        <div class="field" id="p-subject-other-wrap" style="display:none;">
+          <label>과목명 (직접 입력)</label>
+          <input type="text" id="p-subject-other" placeholder="편제표에 없는 과목명 입력">
+        </div>
+        <div class="field">
+          <label>일시</label>
+          <input type="date" id="p-date" value="2026-09-18">
+        </div>
+        <div class="field">
+          <label>교시</label>
+          <input type="text" id="p-period" placeholder="예) 5교시">
+        </div>
+        <div class="field manual-entry">
+          <label>수업 장소</label>
+          <input type="text" id="p-place" placeholder="예) 2학년 3반 교실">
+        </div>
+        <div class="field manual-entry">
+          <label>차시</label>
+          <input type="text" id="p-cha" placeholder="예) 4/10">
+        </div>
+        <div class="field full manual-entry">
+          <label>단원명</label>
+          <input type="text" id="p-unit" placeholder="예) Ⅲ. 여행과 문화">
+        </div>
+        <div class="field manual-entry tpl-basic">
+          <label>교수학습 모형</label>
+          <input type="text" id="p-model" placeholder="예) 모둠 협력학습 모형">
+        </div>
+        <div class="field">
+          <label>수업주제</label>
+          <input type="text" id="p-topic" placeholder="수업주제 입력">
+        </div>
+
+        <!-- 기본 양식 전용 -->
+        <div class="field full manual-entry tpl-basic">
+          <label>학습목표</label>
+          <textarea id="p-goal" rows="2" placeholder="이 수업을 통해 학생들이 도달해야 할 목표를 입력하세요."></textarea>
+        </div>
+        <div class="field full manual-entry tpl-basic">
+          <label>성취수준</label>
+          <textarea id="p-level" rows="2" placeholder="교육과정 성취기준에 따른 성취수준을 입력하세요."></textarea>
+        </div>
+        <div class="field full manual-entry tpl-basic">
+          <label>충남교육 핵심역량 (해당 항목 선택, 복수 선택 가능)</label>
+          <div class="checkbox-group" id="p-core"></div>
+        </div>
+
+        <!-- 개념 기반 학습 양식 전용 -->
+        <div class="field manual-entry tpl-concept">
+          <label>공개유형</label>
+          <input type="text" id="q-opentype" placeholder="예) 학부모 공개수업">
+        </div>
+        <div class="field manual-entry tpl-concept">
+          <label>핵심 개념</label>
+          <input type="text" id="q-corekeyword" placeholder="예) 변화, 관계, 관점">
+        </div>
+        <div class="field full manual-entry tpl-concept">
+          <label>핵심 아이디어</label>
+          <textarea id="q-coreidea" rows="2" placeholder="이 단원(수업)을 관통하는 핵심 아이디어(일반화된 진술)를 입력하세요."></textarea>
+        </div>
+        <div class="field full manual-entry tpl-concept">
+          <label>안내 질문</label>
+          <textarea id="q-questions" rows="3" placeholder="- 사실적 질문:
+- 개념적 질문:
+- 논쟁적 질문:"></textarea>
+        </div>
+        <div class="field full manual-entry tpl-concept">
+          <label>성취기준</label>
+          <textarea id="q-standard" rows="2" placeholder="교육과정 성취기준을 입력하세요."></textarea>
+        </div>
+        <div class="field full manual-entry tpl-concept">
+          <label>범주 (내용 요소)</label>
+          <div class="cat-row">
+            <div class="subfield">
+              <label>지식·이해</label>
+              <textarea id="q-cat-knowledge" rows="3"></textarea>
+            </div>
+            <div class="subfield">
+              <label>과정·기능</label>
+              <textarea id="q-cat-process" rows="3"></textarea>
+            </div>
+            <div class="subfield">
+              <label>가치·태도</label>
+              <textarea id="q-cat-value" rows="3"></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="field full manual-entry tpl-concept">
+          <label>교과 역량</label>
+          <textarea id="q-competency" rows="2" placeholder="이 수업에서 기르고자 하는 교과 역량을 입력하세요."></textarea>
+        </div>
+
+        <div class="field full manual-entry">
+          <label>세계시민 (해당 항목 선택, 복수 선택 가능)</label>
+          <div class="checkbox-group" id="p-global"></div>
+        </div>
+
+        <div class="field full manual-entry tpl-basic">
+          <label>교사의 수업관</label>
+          <textarea id="p-view" rows="3" placeholder="이 수업을 통해 전달하고자 하는 교사의 교육관·수업관을 입력하세요."></textarea>
+        </div>
+        <div class="field full manual-entry tpl-concept">
+          <label>수업의 주안점 및 고민</label>
+          <textarea id="q-concerns" rows="3" placeholder="이 수업을 설계하며 중점을 둔 부분이나 고민한 지점을 입력하세요."></textarea>
+        </div>
+
+        <div class="field full manual-entry">
+          <label id="p-flow-label">수업의 흐름</label>
+          <textarea id="p-flow" rows="8" placeholder="1. 전시학습 확인 및 본시학습과의 연관
+
+2. 동기유발
+ -
+3. 본시 수업 안내
+ -
+4. 본시 수업 활동
+ -
+ -
+5. 본시학습 정리
+ -
+6. 차시 예고 및 수업 정리"></textarea>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn-ghost" id="plan-cancel-edit" style="display:none;">편집 취소</button>
+        <button class="btn-ghost" id="plan-clear">입력 지우기</button>
+        <button class="btn-primary" id="plan-save">저장하기</button>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>저장된 교수학습과정안<span class="count" id="plan-count"></span>
+        <div class="grade-pdf-bar" style="margin-left:auto;">
+          <button class="btn-primary btn-small" id="all-plans-pdf">📚 전체 과정안 PDF</button>
+          <span id="grade-pdf-buttons" class="grade-pdf-bar"></span>
+        </div>
+      </h2>
+      <div style="font-size:11.5px;color:var(--muted);margin:-8px 0 14px;">※ 공개수업 일정표에 등록된 수업과 연결된 교수학습과정안만 목록·PDF에 표시됩니다.</div>
+      <div id="plan-list"></div>
+      <div class="empty" id="plan-empty-msg">아직 작성된 교수학습과정안이 없습니다. 위 양식에서 작성하고 저장해 보세요.</div>
+    </div>
+
+  </div><!-- /#tab-plans -->
+
+</div>
+
+<div class="preview-modal" id="plan-preview-modal" aria-hidden="true">
+  <div class="preview-dialog" role="dialog" aria-modal="true" aria-labelledby="plan-preview-title">
+    <div class="preview-toolbar">
+      <strong id="plan-preview-title">교수학습과정안 A4 미리보기</strong>
+      <button type="button" class="btn-primary" id="preview-print">🖨 인쇄하기</button>
+      <button type="button" class="btn-primary" id="preview-pdf" title="인쇄창에서 PDF로 저장을 선택하세요">📄 PDF 저장</button>
+      <button type="button" class="btn-ghost" id="preview-close">닫기</button>
+    </div>
+    <iframe class="preview-frame" id="plan-preview-frame" title="교수학습과정안 A4 미리보기"></iframe>
+  </div>
+</div>
+<div class="print-area" id="plan-print-area" aria-hidden="true"></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyB9tuFCZCkhfuxP5PtbQRlYAmKKrWeEFpA",
+  authDomain: "openclassday-a8744.firebaseapp.com",
+  databaseURL: "https://openclassday-a8744-default-rtdb.firebaseio.com",
+  projectId: "openclassday-a8744",
+  storageBucket: "openclassday-a8744.firebasestorage.app",
+  messagingSenderId: "119106780999",
+  appId: "1:119106780999:web:ef8cdaf5547359bd005662",
+  measurementId: "G-YT39PC5R42"
+};
+firebase.initializeApp(firebaseConfig);
+const realtimeDb = firebase.database();
+const sharedRoot = realtimeDb.ref('openclassday_0918');
+
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+  });
+});
+
+function switchToTab(tab){
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.toggle('active', c.id === 'tab-' + tab));
+}
+
+// 2025학년도 편제표 기준 2학기 편성 과목 (영어과 / 중국어·일본어·베트남어과 공통)
+const SUBJECT_GROUPS = {
+  "국어": ["공통국어2","화법과 언어","문학","독서와 작문","독서 토론과 글쓰기","주제 탐구 독서","IB 언어와 문학 HL"],
+  "수학": ["공통수학2","대수","미적분Ⅰ","확률과 통계","미적분Ⅱ","IB 수학 분석과 접근 SL"],
+  "영어": ["공통영어2","비판적 사고와 영어 토론","비판적 사고와 영어 작문","심화 영어 독해Ⅰ","심화 영어 독해Ⅱ","심화 영어 회화Ⅱ","심화 영어Ⅰ","심화 영어Ⅱ","심화 영어 작문Ⅰ","심화 영어 작문Ⅱ","IB 영어 HL","IB 영어 연극이론과 창작 SL"],
+  "사회(역사/도덕포함)": ["한국사2","통합사회2","도시의 미래탐구","정치","윤리와 사상","동아시아사 역사 기행","IB 역사 HL","국제 정치","국제 경제","국제법","지역이해","비교 문화","세계문제와 미래사회","국제관계와 국제기구","현대 세계의 변화","IB 역사","여행지리","역사로 탐구하는 현대세계","사회문제 탐구","금융과 경제생활","윤리문제 탐구","기후변화와 지속가능한 세계"],
+  "과학": ["통합과학2","과학탐구실험2","생명과학","지구과학","IB 생명과학 SL","과학의 역사와 문화","기후변화와 환경생태"],
+  "체육": ["스포츠 과학","체육2","스포츠 생활2"],
+  "예술": ["미술"],
+  "교양": ["IB 지식이론Ⅱ","IB 지식이론Ⅲ","IB 지식이론Ⅳ","진로와 직업","생태와 환경","창의융합과제연구","인간과 경제활동","논술","인간과 심리","교육의 이해"],
+  "제2외국어(중국어·일본어·베트남어)": ["전공 기초 중국어","전공 기초 일본어","전공 기초 베트남어","중국어 회화Ⅰ","일본어 회화Ⅰ","베트남어 회화Ⅰ","중국어 회화Ⅱ","일본어 회화Ⅱ","베트남어 회화Ⅱ","중국어 독해와 작문Ⅰ","일본어 독해와 작문Ⅰ","베트남어 독해와 작문Ⅰ","중국어 독해와 작문Ⅱ","일본어 독해와 작문Ⅱ","베트남어 독해와 작문Ⅱ","심화 중국어","심화 일본어","심화 베트남어","중국어 낭독과 연설","일본어 낭독과 전통문화 이해","베트남어 낭독과 문화 이해","중국어문법","일본어문법","베트남어문법","중국문학","일본문학","베트남문학","중국 문화","일본 문화","베트남 문화"]
+};
+
+function populateSubjectSelect(selectEl){
+  selectEl.innerHTML = '<option value="">선택</option>';
+  for(const [group, subjects] of Object.entries(SUBJECT_GROUPS)){
+    const og = document.createElement('optgroup');
+    og.label = group;
+    subjects.forEach(s => {
+      const opt = document.createElement('option');
+      opt.value = s;
+      opt.textContent = s;
+      og.appendChild(opt);
+    });
+    selectEl.appendChild(og);
+  }
+  const other = document.createElement('option');
+  other.value = '__OTHER__';
+  other.textContent = '기타 (편제표에 없는 과목 직접 입력)';
+  selectEl.appendChild(other);
+}
+populateSubjectSelect(document.getElementById('f-subject'));
+populateSubjectSelect(document.getElementById('p-subject'));
+
+document.getElementById('f-subject').addEventListener('change', (e) => {
+  document.getElementById('f-subject-other-wrap').style.display =
+    e.target.value === '__OTHER__' ? 'flex' : 'none';
+});
+document.getElementById('p-subject').addEventListener('change', (e) => {
+  document.getElementById('p-subject-other-wrap').style.display =
+    e.target.value === '__OTHER__' ? 'flex' : 'none';
+});
+
+let entries = [];
+let plans = [];
+let selectedPeriod = '5교시';
+let editingId = null;
+let editingPlanId = null;
+let linkedEntryId = null;
+let isAdmin = false;
+let planTemplate = 'basic';
+let templateLocked = false;
+
+const STORAGE_KEY = 'lessons_0918';
+const PLANS_KEY = 'lesson_plans_0918';
+let isSyncing = false;
+let currentPreviewPlan = null;
+let currentPreviewHtml = '';
+let unlinkedPanelOpen = false;
+
+async function loadEntriesFromStorage(){
+  try{
+    const snapshot = await sharedRoot.child('entries').once('value');
+    entries = snapshot.exists() ? Object.values(snapshot.val()) : [];
+  } catch(err){
+    entries = [];
+    throw err;
+  }
+}
+
+async function saveEntryRecord(entry){
+  try{
+    await sharedRoot.child('entries/' + entry.id).set(entry);
+    return true;
+  } catch(err){
+    console.error('저장 오류:', err);
+    alert('저장 중 오류가 발생했습니다. 다시 시도해 주세요.');
+    return false;
+  }
+}
+
+async function deleteEntryRecord(id){
+  try{
+    await sharedRoot.child('entries/' + id).remove();
+    return true;
+  } catch(err){
+    console.error('삭제 오류:', err);
+    alert('삭제 중 오류가 발생했습니다. 다시 시도해 주세요.');
+    return false;
+  }
+}
+
+async function loadPlansFromStorage(){
+  try{
+    const snapshot = await sharedRoot.child('plans').once('value');
+    plans = snapshot.exists() ? Object.values(snapshot.val()) : [];
+  } catch(err){
+    plans = [];
+    throw err;
+  }
+}
+
+async function savePlanRecord(plan){
+  try{
+    await sharedRoot.child('plans/' + plan.id).set(plan);
+    return true;
+  } catch(err){
+    console.error('저장 오류:', err);
+    alert('저장 중 오류가 발생했습니다. 다시 시도해 주세요.');
+    return false;
+  }
+}
+
+async function deletePlanRecord(id){
+  try{
+    await sharedRoot.child('plans/' + id).remove();
+    return true;
+  } catch(err){
+    console.error('삭제 오류:', err);
+    alert('삭제 중 오류가 발생했습니다. 다시 시도해 주세요.');
+    return false;
+  }
+}
+
+function updateSyncStatus(ok){
+  const badge = document.getElementById('sync-badge');
+  const note = document.getElementById('sync-note');
+  const now = new Date();
+  const hh = String(now.getHours()).padStart(2,'0');
+  const mm = String(now.getMinutes()).padStart(2,'0');
+  const ss = String(now.getSeconds()).padStart(2,'0');
+  if(ok){
+    badge.className = 'sync-badge';
+    badge.textContent = '🟢 실시간 공유 중';
+  } else {
+    badge.className = 'sync-badge offline';
+    badge.textContent = '⚪ 동기화 확인 필요';
+  }
+  note.textContent = `마지막 동기화: ${hh}:${mm}:${ss}`;
+}
+
+async function syncFromStorage(){
+  if(isSyncing) return;
+  isSyncing = true;
+  try{
+    const entrySnapshot = await sharedRoot.child('entries').once('value');
+    const remote = entrySnapshot.exists() ? Object.values(entrySnapshot.val()) : [];
+    if(!editingId){
+      entries = remote;
+    }
+    const planSnapshot = await sharedRoot.child('plans').once('value');
+    const remotePlans = planSnapshot.exists() ? Object.values(planSnapshot.val()) : [];
+    if(!editingPlanId){
+      plans = remotePlans;
+    }
+    render();
+    renderPlans();
+    updateSyncStatus(true);
+  } catch(err){
+    updateSyncStatus(false);
+  } finally{
+    isSyncing = false;
+  }
+}
+
+function startRealtimeSync(){
+  sharedRoot.child('entries').on('value', snapshot => {
+    if(!editingId) entries = snapshot.exists() ? Object.values(snapshot.val()) : [];
+    render();
+    renderPlans();
+    updateSyncStatus(true);
+  }, () => updateSyncStatus(false));
+  sharedRoot.child('plans').on('value', snapshot => {
+    if(!editingPlanId) plans = snapshot.exists() ? Object.values(snapshot.val()) : [];
+    renderPlans();
+    render();
+    updateSyncStatus(true);
+  }, () => updateSyncStatus(false));
+}
+
+document.getElementById('manual-refresh').addEventListener('click', () => {
+  syncFromStorage();
+});
+
+const DEADLINE = new Date('2026-09-14T16:30:00');
+const ADMIN_PASSWORD = 'admin1234';
+
+function isPastDeadline(){
+  return new Date() > DEADLINE;
+}
+
+function canEdit(){
+  return isAdmin || !isPastDeadline();
+}
+
+function fmtDeadline(){
+  return '9월 14일(월) 16:30';
+}
+
+function updateDeadlineBanner(){
+  const banner = document.getElementById('deadline-banner');
+  const locked = isPastDeadline();
+  if(isAdmin){
+    banner.className = 'deadline-banner open';
+    banner.innerHTML = `<span class="badge">관리자</span> 관리자 모드로 접속 중입니다. 마감(${fmtDeadline()}) 이후에도 언제든 등록·수정·삭제할 수 있습니다.`;
+  } else if(locked){
+    banner.className = 'deadline-banner closed';
+    banner.innerHTML = `<span class="badge">마감</span> 등록·수정 기간이 종료되었습니다. (마감: ${fmtDeadline()})`;
+  } else {
+    banner.className = 'deadline-banner open';
+    banner.innerHTML = `<span class="badge">접수중</span> ${fmtDeadline()}까지 등록 및 수정이 가능합니다.`;
+  }
+}
+
+function updateFormLockState(){
+  const locked = !canEdit();
+  document.getElementById('locked-note').style.display = locked ? 'block' : 'none';
+  document.getElementById('add-row').disabled = locked;
+  document.getElementById('add-row').style.opacity = locked ? 0.5 : 1;
+  document.getElementById('add-row').style.cursor = locked ? 'not-allowed' : 'pointer';
+  if(locked && editingId){ exitEditMode(); }
+}
+
+document.getElementById('admin-toggle').addEventListener('click', () => {
+  if(isAdmin){
+    isAdmin = false;
+    document.getElementById('admin-toggle').classList.remove('is-admin');
+    document.getElementById('admin-toggle').textContent = '🔒 관리자 모드';
+  } else {
+    const pw = prompt('관리자 비밀번호를 입력하세요.');
+    if(pw === null) return;
+    if(pw === ADMIN_PASSWORD){
+      isAdmin = true;
+      document.getElementById('admin-toggle').classList.add('is-admin');
+      document.getElementById('admin-toggle').textContent = '🔓 관리자 모드 (해제)';
+    } else {
+      alert('비밀번호가 올바르지 않습니다.');
+    }
+  }
+  updateDeadlineBanner();
+  updateFormLockState();
+  render();
+});
+
+const GRADE_ORDER = { '1':1, '2':2, '3':3, 'IB':4 };
+const CLASS_ORDER = { '1':1,'2':2,'3':3,'4':4,'5':5,'6':6,'7':7,'IB':8 };
+
+document.getElementById('btn-5').addEventListener('click', () => setPeriod('5교시'));
+document.getElementById('btn-6').addEventListener('click', () => setPeriod('6교시'));
+
+function setPeriod(p){
+  selectedPeriod = p;
+  document.getElementById('btn-5').classList.toggle('active', p === '5교시');
+  document.getElementById('btn-6').classList.toggle('active', p === '6교시');
+}
+
+function gradeLabel(g){ return g ? (g === 'IB' ? 'IB과정' : g + '학년') : '-'; }
+function classLabel(c){ return c ? (c === 'IB' ? 'IB과정' : c + '반') : '-'; }
+
+function fmtDateTime(ts){
+  if(!ts) return '-';
+  const d = new Date(ts);
+  if(isNaN(d.getTime())) return '-';
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth()+1).padStart(2,'0');
+  const dd = String(d.getDate()).padStart(2,'0');
+  const hh = String(d.getHours()).padStart(2,'0');
+  const mi = String(d.getMinutes()).padStart(2,'0');
+  return `${yyyy}.${mm}.${dd} ${hh}:${mi}`;
+}
+
+function planForEntry(entryId){
+  const matches = plans.filter(p => p.entryId === entryId);
+  if(matches.length === 0) return null;
+  return matches.reduce((a, b) => (a.updatedAt > b.updatedAt ? a : b));
+}
+
+function render(){
+  updateFormLockState();
+  populatePlanLoadEntrySelect();
+  entries.sort((a,b) => {
+    const ga = GRADE_ORDER[a.grade] ?? 99;
+    const gb = GRADE_ORDER[b.grade] ?? 99;
+    if(ga !== gb) return ga - gb;
+    const ca = CLASS_ORDER[a.cls] ?? 99;
+    const cb = CLASS_ORDER[b.cls] ?? 99;
+    return ca - cb;
+  });
+
+  const tbody = document.getElementById('table-body');
+  const emptyMsg = document.getElementById('empty-msg');
+  const countEl = document.getElementById('row-count');
+
+  tbody.innerHTML = '';
+
+  if(entries.length === 0){
+    emptyMsg.style.display = 'block';
+    countEl.textContent = '';
+    return;
+  }
+  emptyMsg.style.display = 'none';
+  countEl.textContent = `총 ${entries.length}건`;
+
+  let lastGrade = undefined;
+  entries.forEach((e, idx) => {
+    if(e.grade !== lastGrade){
+      lastGrade = e.grade;
+      const countInGrade = entries.filter(x => x.grade === e.grade).length;
+      const gtr = document.createElement('tr');
+      gtr.className = 'grade-header';
+      gtr.innerHTML = `
+        <td colspan="10">
+          <div class="grade-header-inner">
+            <span class="dot"></span>
+            <span>${gradeLabel(e.grade)}</span>
+            <span class="n">${countInGrade}건</span>
+          </div>
+        </td>
+      `;
+      tbody.appendChild(gtr);
+    }
+
+    const tr = document.createElement('tr');
+    if(e.id === editingId) tr.classList.add('row-editing');
+    const editable = canEdit();
+    const plan = planForEntry(e.id);
+    const planCell = plan
+      ? `<span class="status-badge done">✔ 작성완료</span>
+         <div class="plan-updated-at">최종수정 ${fmtDateTime(plan.updatedAt)}</div>
+         <div class="row-btns" style="margin-top:4px;">
+           <button class="icon-btn plan-edit-btn" data-entry="${e.id}" title="수정">✎ 수정</button>
+           <button class="icon-btn plan-print-btn" data-plan="${plan.id}" title="A4 미리보기 및 출력" aria-label="A4 미리보기 및 출력">🖨️</button>
+         </div>`
+      : `<span class="status-badge todo">미작성</span>
+         <div class="row-btns" style="margin-top:4px;">
+           <button class="icon-btn plan-new-btn" data-entry="${e.id}" title="작성하기">✏ 작성하기</button>
+         </div>`;
+    tr.innerHTML = `
+      <td><span class="order-badge">${idx+1}</span></td>
+      <td class="grade-class-cell">${gradeLabel(e.grade)}</td>
+      <td class="grade-class-cell">${classLabel(e.cls)}</td>
+      <td><span class="period-tag">${e.period}</span></td>
+      <td>${e.teacher || '-'}</td>
+      <td>${e.subject || '-'}</td>
+      <td>${e.topic || '-'}</td>
+      <td>${e.method || '-'}</td>
+      <td>${planCell}</td>
+      <td>
+        <div class="row-btns">
+          ${editable ? `<button class="icon-btn edit" data-id="${e.id}" title="수정">✎</button>
+          <button class="icon-btn del" data-id="${e.id}" title="삭제">✕</button>` : `<span style="color:var(--muted);font-size:12px;">🔒</span>`}
+        </div>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  document.querySelectorAll('.icon-btn.del').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      if(!canEdit()){
+        alert(`수정 마감(${fmtDeadline()})이 지나 삭제할 수 없습니다.`);
+        return;
+      }
+      const targetId = btn.dataset.id;
+      const linkedPlans = plans.filter(p => p.entryId === targetId);
+      const confirmMsg = linkedPlans.length
+        ? `이 일정을 삭제하시겠습니까?\n연결된 교수학습과정안 ${linkedPlans.length}건도 함께 삭제됩니다.`
+        : '이 일정을 삭제하시겠습니까?';
+      if(!confirm(confirmMsg)) return;
+      const entriesBackup = entries;
+      const plansBackup = plans.map(p => ({...p}));
+      entries = entries.filter(e => e.id !== targetId);
+      plans = plans.filter(p => p.entryId !== targetId);
+      if(editingId === targetId) exitEditMode();
+      if(editingPlanId && linkedPlans.some(p => p.id === editingPlanId)) clearPlanForm();
+      render();
+      renderPlans();
+      const ok = await deleteEntryRecord(targetId);
+      if(!ok){ entries = entriesBackup; plans = plansBackup; render(); renderPlans(); return; }
+      for(const p of linkedPlans){
+        await deletePlanRecord(p.id);
+      }
+      updateSyncStatus(true);
+    });
+  });
+  document.querySelectorAll('.icon-btn.edit').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if(!canEdit()){
+        alert(`수정 마감(${fmtDeadline()})이 지나 수정할 수 없습니다.`);
+        return;
+      }
+      enterEditMode(btn.dataset.id);
+    });
+  });
+  document.querySelectorAll('.plan-new-btn, .plan-edit-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const entryId = btn.dataset.entry;
+      const existing = planForEntry(entryId);
+      if(existing){
+        loadPlanIntoForm(existing);
+      } else {
+        clearPlanForm();
+        prefillPlanFromEntry(entryId);
+      }
+      switchToTab('plans');
+      document.getElementById('plan-form-panel').scrollIntoView({behavior:'smooth', block:'start'});
+    });
+  });
+  document.querySelectorAll('.plan-print-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const plan = plans.find(p => p.id === btn.dataset.plan);
+      if(plan) previewPlan(plan);
+    });
+  });
+}
+
+function enterEditMode(id){
+  const e = entries.find(x => x.id === id);
+  if(!e) return;
+  editingId = id;
+
+  document.getElementById('f-teacher').value = e.teacher;
+  document.getElementById('f-grade').value = e.grade;
+  document.getElementById('f-class').value = e.cls;
+  document.getElementById('f-topic').value = e.topic;
+  document.getElementById('f-method').value = e.method;
+  setPeriod(e.period);
+
+  const subjSel = document.getElementById('f-subject');
+  const knownValues = Array.from(subjSel.options).map(o => o.value);
+  if(knownValues.includes(e.subject)){
+    subjSel.value = e.subject;
+    document.getElementById('f-subject-other-wrap').style.display = 'none';
+  } else {
+    subjSel.value = '__OTHER__';
+    document.getElementById('f-subject-other-wrap').style.display = 'flex';
+    document.getElementById('f-subject-other').value = e.subject;
+  }
+
+  document.getElementById('form-panel').classList.add('editing');
+  document.getElementById('form-title').innerHTML = '수업 정보 수정 <span class="edit-flag">편집 중</span>';
+  const addBtn = document.getElementById('add-row');
+  addBtn.textContent = '수정 완료';
+  addBtn.classList.add('is-editing');
+  document.getElementById('cancel-edit').style.display = 'inline-block';
+
+  document.getElementById('form-panel').scrollIntoView({behavior:'smooth', block:'start'});
+  render();
+}
+
+function exitEditMode(){
+  editingId = null;
+  document.getElementById('form-panel').classList.remove('editing');
+  document.getElementById('form-title').textContent = '수업공개 일정 등록';
+  const addBtn = document.getElementById('add-row');
+  addBtn.textContent = '일정 추가';
+  addBtn.classList.remove('is-editing');
+  document.getElementById('cancel-edit').style.display = 'none';
+  clearForm();
+}
+
+document.getElementById('cancel-edit').addEventListener('click', () => {
+  exitEditMode();
+  render();
+});
+
+function clearForm(){
+  document.getElementById('f-teacher').value = '';
+  document.getElementById('f-grade').value = '';
+  document.getElementById('f-class').value = '';
+  document.getElementById('f-subject').value = '';
+  document.getElementById('f-subject-other').value = '';
+  document.getElementById('f-subject-other-wrap').style.display = 'none';
+  document.getElementById('f-topic').value = '';
+  document.getElementById('f-method').value = '';
+  setPeriod('5교시');
+}
+
+function readSubjectValue(){
+  const sel = document.getElementById('f-subject').value;
+  if(sel === '__OTHER__'){
+    return document.getElementById('f-subject-other').value.trim();
+  }
+  return sel;
+}
+
+document.getElementById('add-row').addEventListener('click', async () => {
+  if(!canEdit()){
+    alert(`수정 마감(${fmtDeadline()})이 지나 더 이상 등록/수정할 수 없습니다. 변경이 필요하면 관리자에게 문의하세요.`);
+    return;
+  }
+
+  const teacher = document.getElementById('f-teacher').value.trim();
+  const grade = document.getElementById('f-grade').value;
+  const cls = document.getElementById('f-class').value;
+  const subject = readSubjectValue();
+  const topic = document.getElementById('f-topic').value.trim();
+  const method = document.getElementById('f-method').value.trim();
+
+  const missing = [];
+  if(!teacher) missing.push('교사명');
+  if(!grade) missing.push('수업학년');
+  if(!cls) missing.push('학급');
+  if(!subject) missing.push('교과명');
+  if(!topic) missing.push('수업주제');
+  if(!method) missing.push('수업방법');
+
+  if(missing.length > 0){
+    alert(`다음 항목을 모두 입력해 주세요:\n${missing.join(', ')}`);
+    return;
+  }
+
+  const backup = entries.map(e => ({...e}));
+  let targetId;
+
+  const addBtn = document.getElementById('add-row');
+  addBtn.disabled = true;
+
+  if(editingId){
+    targetId = editingId;
+    const e = entries.find(x => x.id === editingId);
+    Object.assign(e, { teacher, grade, cls, subject, topic, method, period: selectedPeriod });
+    exitEditMode();
+  } else {
+    targetId = Date.now().toString() + Math.random().toString(16).slice(2);
+    entries.push({
+      id: targetId,
+      teacher, grade, cls, subject, topic, method, period: selectedPeriod
+    });
+    clearForm();
+  }
+
+  render();
+
+  const savedEntry = entries.find(e => e.id === targetId);
+  const ok = await saveEntryRecord(savedEntry);
+  addBtn.disabled = !canEdit() ? true : false;
+
+  if(!ok){
+    entries = backup;
+    render();
+    return;
+  }
+  updateSyncStatus(true);
+  document.getElementById('f-teacher').focus();
+});
+
+document.getElementById('clear-form').addEventListener('click', () => {
+  if(editingId){ exitEditMode(); render(); }
+  else clearForm();
+});
+
+/* ===================== 교수학습과정안 작성 ===================== */
+
+const CORE_COMPETENCIES = ['자기관리능력','다중문해력','대인관계능력','문제해결력','민주시민의식','문화적 소양','생태적 감수성'];
+const GLOBAL_CITIZEN = ['인권','평등','평화','문화다양성','지속가능발전','기후변화','생물다양성'];
+const DEFAULT_FLOW = '';
+
+function renderChipGroup(containerId, options){
+  const box = document.getElementById(containerId);
+  box.innerHTML = '';
+  options.forEach((opt, i) => {
+    const id = containerId + '-' + i;
+    const label = document.createElement('label');
+    label.className = 'chip';
+    label.innerHTML = `<input type="checkbox" id="${id}" value="${opt}"><span>${opt}</span>`;
+    const input = label.querySelector('input');
+    input.addEventListener('change', () => {
+      label.classList.toggle('checked', input.checked);
+    });
+    box.appendChild(label);
+  });
+}
+renderChipGroup('p-core', CORE_COMPETENCIES);
+renderChipGroup('p-global', GLOBAL_CITIZEN);
+
+const FLOW_PLACEHOLDER_BASIC = `1. 전시학습 확인 및 본시학습과의 연관
+
+2. 동기유발
+ -
+3. 본시 수업 안내
+ -
+4. 본시 수업 활동
+ -
+ -
+5. 본시학습 정리
+ -
+6. 차시 예고 및 수업 정리`;
+
+const FLOW_PLACEHOLDER_CONCEPT = `1. Engage (전시학습 확인 및 본시학습과의 연관)
+
+2. Focus (동기유발 - 본 수업에 집중시키기 전략 및 활동)
+
+3. Investigate & Organize (조사 및 조직)
+
+4. Make Meaning · Generalize (일반화하기)
+
+5. Transferring (전이)
+
+6. 차시 예고 및 수업 정리`;
+
+function setFieldDisabled(fieldEl, disabled){
+  fieldEl.classList.toggle('field-disabled', disabled);
+  fieldEl.querySelectorAll('input, select, textarea').forEach(el => { el.disabled = disabled; });
+}
+
+function applyTemplateVisibility(){
+  const isConcept = planTemplate === 'concept';
+  document.querySelectorAll('.tpl-basic').forEach(el => setFieldDisabled(el, isConcept));
+  document.querySelectorAll('.tpl-concept').forEach(el => setFieldDisabled(el, !isConcept));
+  document.getElementById('p-teacher-label').textContent = isConcept ? '지도 교사' : '교사명';
+  document.getElementById('p-gradeclass-label').textContent = isConcept ? '학년반' : '수업 학년반';
+  document.getElementById('p-flow-label').textContent = isConcept ? '개념 기반 학습 단계 (수업의 흐름)' : '수업의 흐름';
+  document.getElementById('p-flow').placeholder = isConcept ? FLOW_PLACEHOLDER_CONCEPT : FLOW_PLACEHOLDER_BASIC;
+  document.querySelectorAll('.template-choice-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.template === planTemplate);
+  });
+}
+
+function setTemplateLocked(locked){
+  templateLocked = locked;
+  document.querySelectorAll('.template-choice-btn').forEach(btn => {
+    btn.classList.toggle('locked', locked);
+    btn.disabled = locked;
+  });
+  document.getElementById('template-lock-note').style.display = locked ? 'block' : 'none';
+}
+
+document.querySelectorAll('.template-choice-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    if(templateLocked) return;
+    planTemplate = btn.dataset.template;
+    applyTemplateVisibility();
+  });
+});
+
+applyTemplateVisibility();
+
+function getCheckedValues(containerId){
+  return Array.from(document.querySelectorAll('#' + containerId + ' input:checked')).map(i => i.value);
+}
+
+function setCheckedValues(containerId, values){
+  document.querySelectorAll('#' + containerId + ' input').forEach(input => {
+    const checked = (values || []).includes(input.value);
+    input.checked = checked;
+    input.closest('.chip').classList.toggle('checked', checked);
+  });
+}
+
+document.getElementById('p-flow').value = DEFAULT_FLOW;
+
+function populatePlanLoadEntrySelect(){
+  const sel = document.getElementById('plan-load-entry');
+  const prev = sel.value;
+  sel.innerHTML = '<option value="">직접 입력</option>';
+  entries.forEach(e => {
+    const opt = document.createElement('option');
+    opt.value = e.id;
+    opt.textContent = `${gradeLabel(e.grade)} ${classLabel(e.cls)} · ${e.teacher || '-'} · ${e.subject || '-'}`;
+    sel.appendChild(opt);
+  });
+  if(Array.from(sel.options).some(o => o.value === prev)) sel.value = prev;
+}
+
+function setSubjectFieldValue(selectId, otherWrapId, otherInputId, value){
+  const sel = document.getElementById(selectId);
+  const known = Array.from(sel.options).map(o => o.value);
+  if(known.includes(value)){
+    sel.value = value;
+    document.getElementById(otherWrapId).style.display = 'none';
+  } else if(value) {
+    sel.value = '__OTHER__';
+    document.getElementById(otherWrapId).style.display = 'flex';
+    document.getElementById(otherInputId).value = value;
+  } else {
+    sel.value = '';
+    document.getElementById(otherWrapId).style.display = 'none';
+    document.getElementById(otherInputId).value = '';
+  }
+}
+
+const PLAN_AUTO_FIELD_IDS = ['p-teacher','p-grade','p-class','p-subject','p-subject-other','p-date','p-period','p-topic'];
+function setPlanAutoFieldsDisabled(disabled){
+  PLAN_AUTO_FIELD_IDS.forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.disabled = disabled;
+  });
+}
+
+function readPlanSubjectValue(){
+  const sel = document.getElementById('p-subject').value;
+  if(sel === '__OTHER__'){
+    return document.getElementById('p-subject-other').value.trim();
+  }
+  return sel;
+}
+
+function prefillPlanFromEntry(entryId){
+  const e = entries.find(x => x.id === entryId);
+  if(!e) return;
+  linkedEntryId = e.id;
+  document.getElementById('plan-load-entry').value = e.id;
+  document.getElementById('p-teacher').value = e.teacher || '';
+  document.getElementById('p-grade').value = e.grade || '';
+  document.getElementById('p-class').value = e.cls || '';
+  setSubjectFieldValue('p-subject', 'p-subject-other-wrap', 'p-subject-other', e.subject || '');
+  document.getElementById('p-topic').value = e.topic || '';
+  document.getElementById('p-period').value = e.period || '';
+  document.getElementById('p-date').value = '2026-09-18';
+  setPlanAutoFieldsDisabled(true);
+}
+
+document.getElementById('plan-load-entry').addEventListener('change', (e) => {
+  const val = e.target.value;
+  if(val){
+    prefillPlanFromEntry(val);
+  } else {
+    linkedEntryId = null;
+    setPlanAutoFieldsDisabled(false);
+  }
+});
+
+document.getElementById('p-subject').addEventListener('change', (e) => {
+  document.getElementById('p-subject-other-wrap').style.display =
+    e.target.value === '__OTHER__' ? 'flex' : 'none';
+});
+
+function clearPlanForm(){
+  editingPlanId = null;
+  linkedEntryId = null;
+  document.getElementById('plan-load-entry').value = '';
+  document.getElementById('p-teacher').value = '';
+  document.getElementById('p-grade').value = '';
+  document.getElementById('p-class').value = '';
+  document.getElementById('p-subject').value = '';
+  document.getElementById('p-subject-other').value = '';
+  document.getElementById('p-subject-other-wrap').style.display = 'none';
+  document.getElementById('p-date').value = '2026-09-18';
+  document.getElementById('p-period').value = '';
+  document.getElementById('p-place').value = '';
+  document.getElementById('p-cha').value = '';
+  document.getElementById('p-unit').value = '';
+  document.getElementById('p-model').value = '';
+  document.getElementById('p-topic').value = '';
+  document.getElementById('p-goal').value = '';
+  document.getElementById('p-level').value = '';
+  setCheckedValues('p-core', []);
+  setCheckedValues('p-global', []);
+  document.getElementById('p-view').value = '';
+  document.getElementById('p-flow').value = DEFAULT_FLOW;
+
+  document.getElementById('q-opentype').value = '';
+  document.getElementById('q-corekeyword').value = '';
+  document.getElementById('q-coreidea').value = '';
+  document.getElementById('q-questions').value = '';
+  document.getElementById('q-standard').value = '';
+  document.getElementById('q-cat-knowledge').value = '';
+  document.getElementById('q-cat-process').value = '';
+  document.getElementById('q-cat-value').value = '';
+  document.getElementById('q-competency').value = '';
+  document.getElementById('q-concerns').value = '';
+
+  planTemplate = 'basic';
+  setTemplateLocked(false);
+  applyTemplateVisibility();
+
+  document.getElementById('plan-form-panel').classList.remove('editing');
+  document.getElementById('plan-form-title').textContent = '교수학습과정안 작성';
+  const saveBtn = document.getElementById('plan-save');
+  saveBtn.textContent = '저장하기';
+  saveBtn.classList.remove('is-editing');
+  document.getElementById('plan-cancel-edit').style.display = 'none';
+  setPlanAutoFieldsDisabled(false);
+}
+
+function loadPlanIntoForm(plan){
+  editingPlanId = plan.id;
+  linkedEntryId = plan.entryId || null;
+  document.getElementById('plan-load-entry').value = plan.entryId || '';
+  document.getElementById('p-teacher').value = plan.teacher || '';
+  document.getElementById('p-grade').value = plan.grade || '';
+  document.getElementById('p-class').value = plan.cls || '';
+  setSubjectFieldValue('p-subject', 'p-subject-other-wrap', 'p-subject-other', plan.subject || '');
+  document.getElementById('p-date').value = plan.date || '2026-09-18';
+  document.getElementById('p-period').value = plan.period || '';
+  document.getElementById('p-place').value = plan.place || '';
+  document.getElementById('p-cha').value = plan.cha || '';
+  document.getElementById('p-unit').value = plan.unit || '';
+  document.getElementById('p-model').value = plan.model || '';
+  document.getElementById('p-topic').value = plan.topic || '';
+  document.getElementById('p-goal').value = plan.goal || '';
+  document.getElementById('p-level').value = plan.level || '';
+  setCheckedValues('p-core', plan.core || []);
+  setCheckedValues('p-global', plan.global || []);
+  document.getElementById('p-view').value = plan.view || '';
+  document.getElementById('p-flow').value = plan.flow || DEFAULT_FLOW;
+
+  document.getElementById('q-opentype').value = plan.opentype || '';
+  document.getElementById('q-corekeyword').value = plan.corekeyword || '';
+  document.getElementById('q-coreidea').value = plan.coreidea || '';
+  document.getElementById('q-questions').value = plan.questions || '';
+  document.getElementById('q-standard').value = plan.standard || '';
+  document.getElementById('q-cat-knowledge').value = plan.catKnowledge || '';
+  document.getElementById('q-cat-process').value = plan.catProcess || '';
+  document.getElementById('q-cat-value').value = plan.catValue || '';
+  document.getElementById('q-competency').value = plan.competency || '';
+  document.getElementById('q-concerns').value = plan.concerns || '';
+
+  planTemplate = plan.template || 'basic';
+  applyTemplateVisibility();
+  setTemplateLocked(true);
+
+  document.getElementById('plan-form-panel').classList.add('editing');
+  document.getElementById('plan-form-title').innerHTML = '교수학습과정안 수정 <span class="edit-flag">편집 중</span>';
+  const saveBtn = document.getElementById('plan-save');
+  saveBtn.textContent = '수정 완료';
+  saveBtn.classList.add('is-editing');
+  document.getElementById('plan-cancel-edit').style.display = 'inline-block';
+  setPlanAutoFieldsDisabled(!!plan.entryId);
+}
+
+document.getElementById('plan-cancel-edit').addEventListener('click', () => {
+  clearPlanForm();
+});
+
+document.getElementById('plan-clear').addEventListener('click', () => {
+  clearPlanForm();
+});
+
+function findEmptyRequiredPlanFields(){
+  const empty = [];
+  const grid = document.querySelector('.plan-grid');
+  const wraps = Array.from(grid.querySelectorAll(':scope > .field'));
+
+  wraps.forEach(wrap => {
+    // 비활성화(양식에 맞지 않아 회색 처리)되었거나 화면에 보이지 않는 항목은 건너뜁니다.
+    if(wrap.classList.contains('field-disabled')) return;
+    if(wrap.style.display === 'none') return;
+
+    const rawLabel = (wrap.querySelector('label')?.textContent || '입력').replace(/[①②]/g,'').trim();
+
+    // 학년/반 선택 (묶음 필드)
+    const subfieldRow = wrap.querySelector(':scope > .subfield-row');
+    if(subfieldRow){
+      const gradeSel = wrap.querySelector('#p-grade');
+      const classSel = wrap.querySelector('#p-class');
+      if(gradeSel && !gradeSel.disabled && !gradeSel.value) empty.push({id:'p-grade', label:'수업 학년'});
+      if(classSel && !classSel.disabled && !classSel.value) empty.push({id:'p-class', label:'학급'});
+      return;
+    }
+
+    // 체크박스 그룹(핵심역량/세계시민)은 복수 선택 항목이라 필수 검사에서 제외합니다.
+    if(wrap.querySelector('.checkbox-group')) return;
+
+    // 범주(내용 요소)처럼 하위 입력이 여러 개인 경우
+    const subfields = wrap.querySelectorAll('.subfield textarea, .subfield input');
+    if(subfields.length){
+      subfields.forEach(sf => {
+        if(!sf.disabled && !sf.value.trim()){
+          const sfLabel = sf.closest('.subfield')?.querySelector('label')?.textContent.trim() || rawLabel;
+          empty.push({id: sf.id, label: `${rawLabel} - ${sfLabel}`});
+        }
+      });
+      return;
+    }
+
+    const control = wrap.querySelector('input, select, textarea');
+    if(!control || control.disabled) return;
+    if(!control.value || !control.value.toString().trim()){
+      empty.push({id: control.id, label: rawLabel});
+    }
+  });
+
+  return empty;
+}
+
+document.getElementById('plan-save').addEventListener('click', async () => {
+  const teacher = document.getElementById('p-teacher').value.trim();
+  if(!teacher){
+    alert('교사명을 입력해 주세요.');
+    return;
+  }
+
+  const emptyFields = findEmptyRequiredPlanFields();
+  if(emptyFields.length){
+    alert(`다음 항목을 입력해야 저장할 수 있습니다.\n\n${emptyFields.map(f => '· ' + f.label).join('\n')}`);
+    const firstEl = document.getElementById(emptyFields[0].id);
+    if(firstEl){
+      firstEl.scrollIntoView({behavior:'smooth', block:'center'});
+      firstEl.focus();
+    }
+    return;
+  }
+
+  const plan = {
+    id: editingPlanId || (Date.now().toString() + Math.random().toString(16).slice(2)),
+    entryId: linkedEntryId || null,
+    template: planTemplate,
+    teacher,
+    grade: document.getElementById('p-grade').value,
+    cls: document.getElementById('p-class').value,
+    subject: readPlanSubjectValue(),
+    date: document.getElementById('p-date').value,
+    period: document.getElementById('p-period').value.trim(),
+    place: document.getElementById('p-place').value.trim(),
+    cha: document.getElementById('p-cha').value.trim(),
+    unit: document.getElementById('p-unit').value.trim(),
+    topic: document.getElementById('p-topic').value.trim(),
+    global: getCheckedValues('p-global'),
+    flow: document.getElementById('p-flow').value.trim(),
+    opentype: document.getElementById('q-opentype').value.trim(),
+    // 기본 양식 전용 필드
+    model: document.getElementById('p-model').value.trim(),
+    goal: document.getElementById('p-goal').value.trim(),
+    level: document.getElementById('p-level').value.trim(),
+    core: getCheckedValues('p-core'),
+    view: document.getElementById('p-view').value.trim(),
+    // 개념 기반 학습 양식 전용 필드
+    corekeyword: document.getElementById('q-corekeyword').value.trim(),
+    coreidea: document.getElementById('q-coreidea').value.trim(),
+    questions: document.getElementById('q-questions').value.trim(),
+    standard: document.getElementById('q-standard').value.trim(),
+    catKnowledge: document.getElementById('q-cat-knowledge').value.trim(),
+    catProcess: document.getElementById('q-cat-process').value.trim(),
+    catValue: document.getElementById('q-cat-value').value.trim(),
+    competency: document.getElementById('q-competency').value.trim(),
+    concerns: document.getElementById('q-concerns').value.trim(),
+    updatedAt: Date.now(),
+    createdAt: editingPlanId ? (plans.find(p => p.id === editingPlanId)?.createdAt || Date.now()) : Date.now()
+  };
+
+  const backup = plans.map(p => ({...p}));
+  const idx = plans.findIndex(p => p.id === plan.id);
+  if(idx >= 0){ plans[idx] = plan; } else { plans.push(plan); }
+
+  renderPlans();
+  render();
+
+  const ok = await savePlanRecord(plan);
+  if(!ok){
+    plans = backup;
+    renderPlans();
+    render();
+    return;
+  }
+  updateSyncStatus(true);
+  clearPlanForm();
+});
+
+function renderPlans(){
+  const listEl = document.getElementById('plan-list');
+  const emptyMsg = document.getElementById('plan-empty-msg');
+  const countEl = document.getElementById('plan-count');
+
+  // 공개수업 일정표에 등록된 수업과 연결된 과정안만 목록/PDF 대상으로 노출합니다.
+  const entryIds = new Set(entries.map(e => e.id));
+  const linkedPlans = plans.filter(p => p.entryId && entryIds.has(p.entryId));
+  const unlinkedPlans = plans.filter(p => !(p.entryId && entryIds.has(p.entryId)));
+
+  listEl.innerHTML = '';
+
+  if(linkedPlans.length === 0){
+    emptyMsg.style.display = 'block';
+    countEl.textContent = '';
+  } else {
+    emptyMsg.style.display = 'none';
+    countEl.textContent = `총 ${linkedPlans.length}건`;
+  }
+
+  const byTeacher = {};
+  linkedPlans.forEach(p => {
+    const key = p.teacher || '(교사명 미입력)';
+    if(!byTeacher[key]) byTeacher[key] = [];
+    byTeacher[key].push(p);
+  });
+
+  Object.keys(byTeacher).sort((a,b) => a.localeCompare(b, 'ko')).forEach(teacher => {
+    const group = document.createElement('div');
+    group.className = 'plan-teacher-group';
+    const list = byTeacher[teacher].sort((a,b) => b.updatedAt - a.updatedAt);
+    group.innerHTML = `<div class="plan-teacher-header"><span>👤 ${teacher}</span><span class="n">${list.length}건</span></div>`;
+    list.forEach(p => {
+      const card = document.createElement('div');
+      card.className = 'plan-card';
+      const meta = `${gradeLabel(p.grade)} ${classLabel(p.cls)} · ${p.subject || '과목 미입력'} · ${p.date || '일시 미입력'} ${p.period || ''}`;
+      const templateBadge = p.template === 'concept'
+        ? `<span class="status-badge" style="background:#eef0fb;color:#5b57c9;">개념 기반</span>`
+        : `<span class="status-badge" style="background:var(--accent-soft);color:var(--edit);">기본 양식</span>`;
+      card.innerHTML = `
+        <div class="plan-card-top">
+          <div>
+            <div class="plan-card-title">${templateBadge} ${p.topic || p.unit || '(수업주제 미입력)'}</div>
+            <div class="plan-card-meta">${meta}</div>
+            <div class="plan-updated-at">최종수정 ${fmtDateTime(p.updatedAt)}</div>
+          </div>
+        </div>
+        <div class="plan-card-actions">
+          <button class="btn-ghost btn-small plan-view-edit" data-id="${p.id}">✎ 수정</button>
+          <button class="btn-primary btn-small plan-view-print" data-id="${p.id}" title="A4 미리보기 및 출력" aria-label="A4 미리보기 및 출력">🖨️</button>
+          <button class="btn-ghost btn-small plan-view-del" data-id="${p.id}">✕ 삭제</button>
+        </div>
+      `;
+      group.appendChild(card);
+    });
+    listEl.appendChild(group);
+  });
+
+  if(unlinkedPlans.length){
+    const warn = document.createElement('div');
+    warn.className = 'panel unlinked-panel';
+    warn.innerHTML = `
+      <h2 class="unlinked-toggle-header" id="unlinked-toggle-header" role="button" tabindex="0" aria-expanded="${unlinkedPanelOpen}">
+        <span class="unlinked-toggle-icon" id="unlinked-toggle-icon">${unlinkedPanelOpen ? '▾' : '▸'}</span>
+        ⚠️ 일정표와 연결되지 않은 과정안<span class="count">${unlinkedPlans.length}건</span>
+      </h2>
+      <div class="unlinked-note">공개수업 일정표에서 해당 수업 정보가 삭제되었거나, 일정과 연결하지 않고 직접 입력한 과정안입니다. 목록 상단과 PDF 출력에서는 제외됩니다. 필요 없다면 삭제해 주세요.</div>
+      <div class="unlinked-body" id="unlinked-body" style="display:${unlinkedPanelOpen ? 'block' : 'none'};"></div>
+    `;
+    const body = warn.querySelector('#unlinked-body');
+    unlinkedPlans.sort((a,b) => b.updatedAt - a.updatedAt).forEach(p => {
+      const card = document.createElement('div');
+      card.className = 'plan-card';
+      const meta = `${p.teacher || '(교사명 미입력)'} · ${gradeLabel(p.grade)} ${classLabel(p.cls)} · ${p.subject || '과목 미입력'}`;
+      card.innerHTML = `
+        <div class="plan-card-top">
+          <div>
+            <div class="plan-card-title">${escapeHtml(p.topic || p.unit || '(수업주제 미입력)')}</div>
+            <div class="plan-card-meta">${escapeHtml(meta)}</div>
+            <div class="plan-updated-at">최종수정 ${fmtDateTime(p.updatedAt)}</div>
+          </div>
+        </div>
+        <div class="plan-card-actions">
+          <button class="btn-ghost btn-small plan-view-edit" data-id="${p.id}">✎ 수정</button>
+          <button class="btn-ghost btn-small plan-view-del" data-id="${p.id}">✕ 삭제</button>
+        </div>
+      `;
+      body.appendChild(card);
+    });
+    listEl.appendChild(warn);
+
+    const toggleHeader = document.getElementById('unlinked-toggle-header');
+    const toggleUnlinkedPanel = () => {
+      unlinkedPanelOpen = !unlinkedPanelOpen;
+      const bodyEl = document.getElementById('unlinked-body');
+      const iconEl = document.getElementById('unlinked-toggle-icon');
+      bodyEl.style.display = unlinkedPanelOpen ? 'block' : 'none';
+      iconEl.textContent = unlinkedPanelOpen ? '▾' : '▸';
+      toggleHeader.setAttribute('aria-expanded', String(unlinkedPanelOpen));
+    };
+    toggleHeader.addEventListener('click', toggleUnlinkedPanel);
+    toggleHeader.addEventListener('keydown', e => {
+      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); toggleUnlinkedPanel(); }
+    });
+  }
+
+  document.querySelectorAll('.plan-view-edit').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const p = plans.find(x => x.id === btn.dataset.id);
+      if(p){
+        loadPlanIntoForm(p);
+        document.getElementById('plan-form-panel').scrollIntoView({behavior:'smooth', block:'start'});
+      }
+    });
+  });
+  document.querySelectorAll('.plan-view-print').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const p = plans.find(x => x.id === btn.dataset.id);
+      if(p) previewPlan(p);
+    });
+  });
+  document.querySelectorAll('.plan-view-del').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      if(!confirm('이 교수학습과정안을 삭제하시겠습니까?')) return;
+      const backup = plans.map(p => ({...p}));
+      plans = plans.filter(p => p.id !== btn.dataset.id);
+      if(editingPlanId === btn.dataset.id) clearPlanForm();
+      renderPlans();
+      render();
+      const ok = await deletePlanRecord(btn.dataset.id);
+      if(!ok){ plans = backup; renderPlans(); render(); return; }
+      updateSyncStatus(true);
+    });
+  });
+
+  updateGradePdfButtons();
+}
+
+function updateGradePdfButtons(){
+  const container = document.getElementById('grade-pdf-buttons');
+  if(!container) return;
+  // 일정표에 아직 등록이 없어도 1학년/2학년/3학년/IB과정 아이콘은 항상 표시합니다.
+  const grades = Object.keys(GRADE_ORDER).sort((a,b) => GRADE_ORDER[a] - GRADE_ORDER[b]);
+
+  container.innerHTML = grades.map(g =>
+    `<button type="button" class="btn-ghost btn-small grade-pdf-btn" data-grade="${g}" title="${gradeLabel(g)} 과정안만 학급순으로 모아 A4 PDF 미리보기">🖨️ ${gradeLabel(g)}</button>`
+  ).join('');
+
+  container.querySelectorAll('.grade-pdf-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      await syncFromStorage();
+      const grade = btn.dataset.grade;
+      const gradeEntries = entries
+        .filter(e => e.grade === grade)
+        .sort((a,b) => (CLASS_ORDER[a.cls] ?? 99) - (CLASS_ORDER[b.cls] ?? 99));
+      const ordered = plansInScheduleOrder(gradeEntries);
+      if(!ordered.length) return alert(`${gradeLabel(grade)}에 저장된 교수학습과정안이 없습니다. (일정표와 연결된 과정안만 출력됩니다)`);
+      currentPreviewPlan = null;
+      currentPreviewHtml = generateAllPlansDocumentHtml(ordered);
+      document.getElementById('plan-preview-title').textContent = `${gradeLabel(grade)} 교수학습과정안 A4 미리보기 (${ordered.length}건)`;
+      document.getElementById('plan-preview-frame').srcdoc = currentPreviewHtml;
+      const modal = document.getElementById('plan-preview-modal');
+      modal.classList.add('open'); modal.setAttribute('aria-hidden','false'); document.body.style.overflow = 'hidden';
+    });
+  });
+}
+
+function escapeHtml(str){
+  return String(str || '').replace(/[&<>"']/g, ch => ({
+    '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'
+  }[ch]));
+}
+
+function fmtDateKr(dateStr){
+  if(!dateStr) return '';
+  const d = new Date(dateStr + 'T00:00:00');
+  if(isNaN(d.getTime())) return dateStr;
+  const days = ['일','월','화','수','목','금','토'];
+  return `${d.getFullYear()}. ${d.getMonth()+1}. ${d.getDate()}.(${days[d.getDay()]})`;
+}
+
+function checklistHtml(all, selected){
+  return all.map(item => {
+    const on = (selected || []).includes(item);
+    return `<span style="display:inline-block;margin:2px 10px 2px 0;">${on ? '■' : '□'} ${escapeHtml(item)}</span>`;
+  }).join('');
+}
+
+function nl2br(str){
+  return escapeHtml(str).replace(/\n/g, '<br>');
+}
+
+function generatePlanDocumentHtml(p){
+  return (p.template === 'concept') ? generateConceptPlanDocumentHtml(p) : generateBasicPlanDocumentHtml(p);
+}
+
+const DOC_STYLE = `
+  @page{size:A4 portrait; margin:12mm;}
+  *{box-sizing:border-box;}
+  html{background:#eef6fc;}
+  body{font-family:'Malgun Gothic','Apple SD Gothic Neo',sans-serif; color:#1f2937; width:210mm; min-height:297mm; padding:14mm 12mm; margin:16px auto; background:#fff; box-shadow:0 3px 18px rgba(31,65,89,.14);}
+  h1{text-align:center; font-size:20px; margin:0 0 28px;}
+  table{width:100%; border-collapse:collapse; margin-bottom:18px; background:#fff; border:2px solid #7fb3d5;}
+  th, td{border:1px solid #9fc7e3; padding:9px 12px; font-size:13.5px; text-align:left; vertical-align:top;}
+  th{background:#dceffc; color:#244b66; width:130px; font-weight:700; white-space:nowrap;}
+  td.wide{white-space:pre-wrap;}
+  .section-title{font-weight:800; font-size:14px; margin:22px 0 8px; padding:8px 12px; background:#dceffc; border-left:4px solid #5b9cc6; color:#244b66;}
+  .example-guide{color:#b7bfc7; font-size:11px; line-height:1.65; font-weight:400; font-style:italic;}
+  .example-guide strong{font-weight:600; font-style:italic;}
+  .flow-box{min-height:45mm; border:2px solid #7fb3d5; padding:12px; font-size:13.5px; line-height:1.65; white-space:pre-wrap; break-inside:auto; page-break-inside:auto;}
+  .cat-table td{width:33.33%;}
+  @media print{html,body{background:#fff;} body{width:auto; min-height:auto; padding:0; margin:0; box-shadow:none;} tr{break-inside:avoid; page-break-inside:avoid;} .section-title{break-after:avoid; page-break-after:avoid;}}
+`;
+
+function generateBasicPlanDocumentHtml(p){
+  const gradeClass = `${gradeLabel(p.grade)} ${classLabel(p.cls)}`;
+  const flowExample = `<div class="example-guide"><strong>1. 전시학습 확인 및 본시학습과의 연관</strong><br><br><strong>2. 동기유발</strong><br>&nbsp;&nbsp;-<br><strong>3. 본시 수업 안내</strong><br>&nbsp;&nbsp;-<br><strong>4. 본시 수업 활동</strong><br>&nbsp;&nbsp;-<br>&nbsp;&nbsp;-<br><strong>5. 본시학습 정리</strong><br>&nbsp;&nbsp;-<br><strong>6. 차시 예고 및 수업 정리</strong></div>`;
+  return `<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>교수학습과정안_${escapeHtml(p.teacher)}</title>
+<style>${DOC_STYLE}</style>
+</head>
+<body>
+  <h1>2026학년도 ${escapeHtml(p.subject || '00')} 교수·학습 과정안</h1>
+  <table>
+    <tr><th>일시</th><td>${escapeHtml(fmtDateKr(p.date))} ${escapeHtml(p.period)}</td><th>수업 학년반</th><td>${gradeClass}</td></tr>
+    <tr><th>수업 장소</th><td>${escapeHtml(p.place)}</td><th>차시</th><td>${escapeHtml(p.cha)}</td></tr>
+    <tr><th>교사명</th><td>${escapeHtml(p.teacher)}</td><th>과목명</th><td>${escapeHtml(p.subject)}</td></tr>
+    <tr><th>단원명</th><td colspan="3">${escapeHtml(p.unit)}</td></tr>
+    <tr><th>교수학습 모형</th><td colspan="3">${escapeHtml(p.model)}</td></tr>
+    <tr><th>수업주제</th><td colspan="3">${escapeHtml(p.topic)}</td></tr>
+    <tr><th>학습목표</th><td colspan="3" class="wide">${nl2br(p.goal)}</td></tr>
+    <tr><th>성취수준</th><td colspan="3" class="wide">${nl2br(p.level)}</td></tr>
+    <tr><th>충남교육 핵심역량</th><td colspan="3">${checklistHtml(CORE_COMPETENCIES, p.core)}</td></tr>
+    <tr><th>세계시민</th><td colspan="3">${checklistHtml(GLOBAL_CITIZEN, p.global)}</td></tr>
+    <tr><th>교사의 수업관</th><td colspan="3" class="wide">${nl2br(p.view)}</td></tr>
+  </table>
+  <div class="section-title">수업의 흐름</div>
+  <div class="flow-box">${p.flow ? nl2br(p.flow) : flowExample}</div>
+</body>
+</html>`;
+}
+
+function generateConceptPlanDocumentHtml(p){
+  const gradeClass = `${gradeLabel(p.grade)} ${classLabel(p.cls)}`;
+  const flowExample = `<div class="example-guide"><strong>1. Engage</strong>(전시학습 확인 및 본시학습과의 연관)<br><br><strong>2. Focus</strong>(동기유발 - 본 수업에 집중시키기 전략 및 활동)<br><br><strong>3. Investigate &amp; Organize</strong>(조사 및 조직)<br><br><strong>4. Make Meaning · Generalize</strong>(일반화하기)<br><br><strong>5. Transferring</strong>(전이)<br><br><strong>6. 차시 예고 및 수업 정리</strong></div>`;
+  return `<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>교수학습과정안_${escapeHtml(p.teacher)}</title>
+<style>${DOC_STYLE}</style>
+</head>
+<body>
+  <h1>2026학년도 수업공개 (${escapeHtml(p.subject || '00')})과 개념기반학습 교수·학습 과정안</h1>
+  <table>
+    <tr><th>일시</th><td>${escapeHtml(fmtDateKr(p.date))} ${escapeHtml(p.period)}</td><th>학년반</th><td>${gradeClass}</td></tr>
+    <tr><th>수업 장소</th><td>${escapeHtml(p.place)}</td><th>차시</th><td>${escapeHtml(p.cha)}</td></tr>
+    <tr><th>지도 교사</th><td>${escapeHtml(p.teacher)}</td><th>과목명</th><td>${escapeHtml(p.subject)}</td></tr>
+    <tr><th>공개유형</th><td colspan="3">${escapeHtml(p.opentype)}</td></tr>
+    <tr><th>단원명 · 수업주제</th><td>${escapeHtml(p.unit)}${p.unit && p.topic ? ' · ' : ''}${escapeHtml(p.topic)}</td><th>핵심 개념</th><td>${escapeHtml(p.corekeyword)}</td></tr>
+    <tr><th>핵심 아이디어</th><td colspan="3" class="wide">${nl2br(p.coreidea)}</td></tr>
+    <tr><th>안내 질문</th><td colspan="3" class="wide">${nl2br(p.questions)}</td></tr>
+    <tr><th>성취기준</th><td colspan="3" class="wide">${nl2br(p.standard)}</td></tr>
+    <tr>
+      <th>범주<br>(내용 요소)</th>
+      <td colspan="3">
+        <table class="cat-table" style="margin:0;border:none;">
+          <tr>
+            <th style="width:auto;">지식·이해</th>
+            <th style="width:auto;">과정·기능</th>
+            <th style="width:auto;">가치·태도</th>
+          </tr>
+          <tr>
+            <td class="wide">${nl2br(p.catKnowledge)}</td>
+            <td class="wide">${nl2br(p.catProcess)}</td>
+            <td class="wide">${nl2br(p.catValue)}</td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <tr><th>교과 역량</th><td colspan="3" class="wide">${nl2br(p.competency)}</td></tr>
+    <tr><th>세계시민</th><td colspan="3">${checklistHtml(GLOBAL_CITIZEN, p.global)}</td></tr>
+    <tr><th>수업의 주안점 및 고민</th><td colspan="3" class="wide">${nl2br(p.concerns)}</td></tr>
+  </table>
+  <div class="section-title">개념 기반 학습 단계 (수업의 흐름)</div>
+  <div class="flow-box">${p.flow ? nl2br(p.flow) : flowExample}</div>
+</body>
+</html>`;
+}
+
+function downloadPlan(p){
+  const html = generatePlanDocumentHtml(p);
+  const blob = new Blob([html], {type:'text/html'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const safeTeacher = (p.teacher || '교사').replace(/[\\/:*?"<>|]/g, '_');
+  const safeDate = (p.date || '').replace(/-/g, '');
+  a.href = url;
+  a.download = `교수학습과정안_${safeTeacher}${safeDate ? '_' + safeDate : ''}.html`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 2000);
+}
+
+function previewPlan(p){
+  currentPreviewPlan = p;
+  currentPreviewHtml = generatePlanDocumentHtml(p);
+  const modal = document.getElementById('plan-preview-modal');
+  const frame = document.getElementById('plan-preview-frame');
+  document.getElementById('plan-preview-title').textContent = `${p.teacher || '교사'} 교수학습과정안 A4 미리보기`;
+  frame.srcdoc = currentPreviewHtml;
+  modal.classList.add('open');
+  modal.setAttribute('aria-hidden','false');
+  document.body.style.overflow = 'hidden';
+}
+
+function closePlanPreview(){
+  const modal = document.getElementById('plan-preview-modal');
+  modal.classList.remove('open');
+  modal.setAttribute('aria-hidden','true');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('preview-close').addEventListener('click', closePlanPreview);
+document.getElementById('plan-preview-modal').addEventListener('click', e => {if(e.target.id === 'plan-preview-modal') closePlanPreview();});
+document.addEventListener('keydown', e => {if(e.key === 'Escape') closePlanPreview();});
+function prepareCurrentPlanForPrint(){
+  if(!currentPreviewHtml) return alert('출력할 교수학습과정안을 먼저 선택해 주세요.');
+  const parsed = new DOMParser().parseFromString(currentPreviewHtml, 'text/html');
+  const area = document.getElementById('plan-print-area');
+  area.innerHTML = parsed.body.innerHTML;
+  area.classList.toggle('combined-print', !!area.querySelector('.combined-plan-page'));
+  area.setAttribute('aria-hidden','false');
+  document.body.classList.add('printing-plan');
+  window.print();
+}
+document.getElementById('preview-print').addEventListener('click', prepareCurrentPlanForPrint);
+document.getElementById('preview-pdf').addEventListener('click', () => {
+  alert('다음 인쇄창에서 프린터 또는 대상을 “PDF로 저장”으로 선택한 후 저장 버튼을 눌러 주세요.\n용지: A4 / 방향: 세로');
+  prepareCurrentPlanForPrint();
+});
+window.addEventListener('afterprint', () => {
+  document.body.classList.remove('printing-plan');
+  const area = document.getElementById('plan-print-area');
+  area.innerHTML = '';
+  area.classList.remove('combined-print');
+  area.setAttribute('aria-hidden','true');
+});
+
+function excelXmlEscape(value){
+  return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'}[ch]));
+}
+
+function excelCell(value, styleId, type='String'){
+  const style = styleId ? ` ss:StyleID="${styleId}"` : '';
+  return `<Cell${style}><Data ss:Type="${type}">${excelXmlEscape(value)}</Data></Cell>`;
+}
+
+function excelSheet(name, headers, rows, widths){
+  const columns = (widths || headers.map(() => 100)).map(w => `<Column ss:AutoFitWidth="0" ss:Width="${w}"/>`).join('');
+  const headerRow = `<Row ss:Height="30">${headers.map(h => excelCell(h,'Header')).join('')}</Row>`;
+  const bodyRows = rows.map(row => `<Row>${row.map((v,i) => excelCell(v, i === 0 ? 'Center' : 'Body', typeof v === 'number' ? 'Number' : 'String')).join('')}</Row>`).join('');
+  return `<Worksheet ss:Name="${excelXmlEscape(name)}"><Table>${columns}${headerRow}${bodyRows}</Table><WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel"><FreezePanes/><FrozenNoSplit/><SplitHorizontal>1</SplitHorizontal><TopRowBottomPane>1</TopRowBottomPane><ProtectObjects>False</ProtectObjects><ProtectScenarios>False</ProtectScenarios></WorksheetOptions></Worksheet>`;
+}
+
+async function exportAllToExcel(){
+  // 버튼을 누르는 시점의 공유 저장소 최신 내용을 다시 불러와 Excel에 반영합니다.
+  await syncFromStorage();
+  const scheduleHeaders = ['순서','학년','학급','교시','교사명','교과명','수업주제','수업방법','과정안 작성상태'];
+  const scheduleRows = entries.map((e,i) => [i+1,gradeLabel(e.grade),classLabel(e.cls),e.period,e.teacher,e.subject,e.topic,e.method,planForEntry(e.id)?'작성완료':'미작성']);
+  const planHeaders = ['순서','양식','교사명','학년','학급','일시','교시','과목명','수업 장소','차시','단원명','수업주제','공개유형','교수학습 모형','학습목표','성취수준','충남교육 핵심역량','핵심 개념','핵심 아이디어','안내 질문','성취기준','지식·이해','과정·기능','가치·태도','교과 역량','세계시민','교사의 수업관','수업의 주안점 및 고민','수업의 흐름'];
+  const planRows = plans.map((p,i) => [
+    i+1,
+    p.template === 'concept' ? '개념 기반' : '기본',
+    p.teacher, gradeLabel(p.grade), classLabel(p.cls), fmtDateKr(p.date), p.period, p.subject, p.place, p.cha, p.unit, p.topic,
+    p.opentype, p.model, p.goal, p.level, (p.core||[]).join(', '),
+    p.corekeyword, p.coreidea, p.questions, p.standard, p.catKnowledge, p.catProcess, p.catValue, p.competency,
+    (p.global||[]).join(', '), p.view, p.concerns, p.flow
+  ]);
+  const workbook = `<?xml version="1.0" encoding="UTF-8"?><?mso-application progid="Excel.Sheet"?><Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"><Styles><Style ss:ID="Default" ss:Name="Normal"><Alignment ss:Vertical="Top"/><Font ss:FontName="맑은 고딕" ss:Size="10"/></Style><Style ss:ID="Header"><Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/><Font ss:FontName="맑은 고딕" ss:Size="10" ss:Bold="1"/><Interior ss:Color="#DCEFFC" ss:Pattern="Solid"/><Borders><Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/><Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/><Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/><Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/></Borders></Style><Style ss:ID="Body"><Alignment ss:Vertical="Top" ss:WrapText="1"/><Borders><Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#C8DCEB"/><Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#C8DCEB"/><Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#C8DCEB"/><Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#C8DCEB"/></Borders></Style><Style ss:ID="Center"><Alignment ss:Horizontal="Center" ss:Vertical="Top"/><Borders><Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#C8DCEB"/><Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#C8DCEB"/><Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#C8DCEB"/><Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#C8DCEB"/></Borders></Style></Styles>${excelSheet('공개수업 일정',scheduleHeaders,scheduleRows,[45,65,65,65,85,150,180,130,90])}${excelSheet('교수학습과정안',planHeaders,planRows,[45,70,85,65,65,105,65,150,110,70,150,180,130,130,150,150,160,130,180,220,180,150,150,150,180,160,220,220,300])}</Workbook>`;
+  const blob = new Blob(['\ufeff' + workbook], {type:'application/vnd.ms-excel;charset=utf-8'});
+  const url = URL.createObjectURL(blob), a = document.createElement('a');
+  a.href = url;
+  a.download = '공개수업_입력데이터_20260918.xls';
+  document.body.appendChild(a);a.click();a.remove();setTimeout(() => URL.revokeObjectURL(url),2000);
+}
+
+document.getElementById('excel-export').addEventListener('click', async () => {
+  const button = document.getElementById('excel-export');
+  const original = button.textContent;
+  button.disabled = true;
+  button.textContent = '📊 최신 내용 반영 중';
+  try{
+    await exportAllToExcel();
+  } catch(err){
+    console.error('Excel 내보내기 오류:', err);
+    alert('Excel 파일을 만드는 중 오류가 발생했습니다. 입력 내용을 저장한 뒤 다시 시도해 주세요.');
+  } finally{
+    button.disabled = false;
+    button.textContent = original;
+  }
+});
+
+function plansInScheduleOrder(entryList){
+  // 공개수업 일정표(entries)와 연결된 과정안만, 학년·학급 순서(entries 정렬 순서)대로 반환합니다.
+  // 일정표에서 삭제된 항목의 과정안은 여기 포함되지 않습니다.
+  const list = entryList || entries;
+  const ordered = [];
+  const used = new Set();
+  list.forEach(entry => {
+    plans.filter(p => p.entryId === entry.id).sort((a,b) => b.updatedAt-a.updatedAt).forEach(p => {
+      if(!used.has(p.id)){ordered.push(p);used.add(p.id);}
+    });
+  });
+  return ordered;
+}
+
+function generateAllPlansDocumentHtml(orderedPlans){
+  const first = generatePlanDocumentHtml(orderedPlans[0]);
+  const head = first.match(/<head>[\s\S]*?<\/head>/i)?.[0] || '<head><meta charset="UTF-8"></head>';
+  const pages = orderedPlans.map(p => {
+    const html = generatePlanDocumentHtml(p);
+    const body = html.match(/<body>([\s\S]*?)<\/body>/i)?.[1] || '';
+    return `<section class="combined-plan-page">${body}</section>`;
+  }).join('');
+  const extraStyle = `<style>.combined-plan-page{width:100%;break-after:page;page-break-after:always}.combined-plan-page:last-child{break-after:auto;page-break-after:auto}@media screen{.combined-plan-page{margin-bottom:16px;padding-bottom:16px;border-bottom:2px dashed #9fc7e3}}</style>`;
+  return `<!DOCTYPE html><html lang="ko">${head.replace('</head>',extraStyle+'</head>')}<body>${pages}</body></html>`;
+}
+
+document.getElementById('all-plans-pdf').addEventListener('click', async () => {
+  await syncFromStorage();
+  const ordered = plansInScheduleOrder();
+  if(!ordered.length) return alert('저장된 교수학습과정안이 없습니다. 과정안을 먼저 저장해 주세요.');
+  currentPreviewPlan = null;
+  currentPreviewHtml = generateAllPlansDocumentHtml(ordered);
+  document.getElementById('plan-preview-title').textContent = `전체 교수학습과정안 A4 미리보기 (${ordered.length}건)`;
+  document.getElementById('plan-preview-frame').srcdoc = currentPreviewHtml;
+  const modal = document.getElementById('plan-preview-modal');
+  modal.classList.add('open');modal.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';
+});
+
+(async function init(){
+  updateDeadlineBanner();
+  await loadEntriesFromStorage();
+  await loadPlansFromStorage();
+  updateFormLockState();
+  render();
+  renderPlans();
+  updateSyncStatus(true);
+  startRealtimeSync();
+})();
+</script>
+</body>
+</html>
